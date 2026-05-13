@@ -1,5 +1,7 @@
 # MemClaw × OpenClaw: Governed Multi-Agent Memory
 
+![Architecture Diagram](./docs/images/memclaw_banner.jpeg)
+
 > A reference implementation for governed multi-agent memory orchestration using MemClaw and OpenClaw.
 
 This project demonstrates how specialized AI agents can share organizational memory without sharing unrestricted access to the same retrieval layer.
@@ -97,8 +99,7 @@ during session startup.
 
 # System Architecture
 
-![Architecture Diagram](./memclaw%20flow.png)
-
+![Architecture Diagram](./docs/images/memclaw%20flow.png)
 
 ---
 
