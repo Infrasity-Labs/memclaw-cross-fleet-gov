@@ -1,0 +1,23 @@
+{
+  "sales-agent-1": {
+    "agent_id": "sales-agent-1",
+    "session_id": "sales-agent-1-20260512151216",
+    "created_at": "2026-05-12T15:12:16.290438",
+    "history": [
+      {
+        "user": "3",
+        "response": "It looks like your message just says \"3\" \u2014 I'm not sure what you're asking. Could you provide more details about what you'd like help with?\n\nAs the Sales Agent, I can assist with topics related to fleet sales and shared organizational information. If you have a question in those areas, please share more context and I'll do my best to help."
+      },
+      {
+        "user": "what is the status on HelathSystem",
+        "response": "Here's the current status on **HealthSystem**:\n\n**Account Overview:**\n- **Contract value:** $3.6M\n- **Current status:** On hold pending compliance review\n- **Scope:** Multi-site hospital network, 14 facilities\n- **Engagement:** Active since Q2; technical evaluation complete and positive\n- **Procurement lead:** Marcus Webb, Director of IT\n\n**Sales Strategy Notes:**\n- Contract is blocked on compliance \u2014 do **not** push pricing until legal clears the HIPAA BAA.\n- Once cleared, you're authorized up to an **18% discount for a 3-year term**, given the strategic importance of the healthcare vertical.\n- **Executive sponsor:** Lisa Tran (VP of Healthcare) has a direct line to their CISO.\n\n**Note:** The specifics of the compliance/legal review (HIPAA BAA status, timeline, blockers) are outside my authorized scope \u2014 you'd need to check with the Legal team for an update on where that stands. That's currently the gating item before we can move forward.\n\nWant help preparing anything for once legal clears, such as pricing scenarios or an executive outreach plan via Lisa Tran?"
+      }
+    ]
+  },
+  "legal-agent-1": {
+    "agent_id": "legal-agent-1",
+    "session_id": "legal-agent-1-20260512152502",
+    "created_at": "2026-05-12T15:25:02.043911",
+    "history": []
+  }
+}

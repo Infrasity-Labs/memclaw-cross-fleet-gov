@@ -1,0 +1,21 @@
+agents:
+  sales-agent-1:
+    allow:
+      - fleet-org-shared
+      - fleet-sales
+    deny:
+      - fleet-legal
+
+  legal-agent-1:
+    allow:
+      - fleet-org-shared
+      - fleet-legal
+    deny:
+      - fleet-sales
+
+  admin-agent:
+    allow:
+      - fleet-org-shared
+      - fleet-sales
+      - fleet-legal
+    deny: []

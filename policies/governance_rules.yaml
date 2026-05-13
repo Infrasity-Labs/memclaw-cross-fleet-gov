@@ -1,0 +1,79 @@
+rules:
+  - rule_id: HIPAA-001
+    description: "HIPAA BAA hold blocks contract execution"
+    severity: HIGH
+    sales_signal_patterns:
+      - "contract"
+      - "sign"
+      - "close"
+      - "execute"
+      - "proceed"
+      - "renewal"
+    legal_signal_patterns:
+      - "hipaa"
+      - "baa"
+      - "compliance hold"
+      - "contract execution blocked"
+      - "phi"
+
+  - rule_id: GDPR-001
+    description: "GDPR erasure request blocks contract renewal"
+    severity: HIGH
+    sales_signal_patterns:
+      - "renewal"
+      - "close"
+      - "finalize"
+      - "sign"
+      - "expand"
+    legal_signal_patterns:
+      - "gdpr"
+      - "article 17"
+      - "erasure"
+      - "right-to-erasure"
+      - "data subject"
+
+  - rule_id: GDPR-002
+    description: "GDPR data transfer requirement blocks international deal execution"
+    severity: HIGH
+    sales_signal_patterns:
+      - "contract"
+      - "execute"
+      - "proceed"
+      - "close"
+      - "sign"
+    legal_signal_patterns:
+      - "dtia"
+      - "standard contractual clauses"
+      - "scc"
+      - "chapter v"
+      - "cross-border"
+
+  - rule_id: SECURITY-001
+    description: "Security review hold blocks MSA signing"
+    severity: MEDIUM
+    sales_signal_patterns:
+      - "sign"
+      - "loi"
+      - "execute"
+      - "proceed"
+      - "close"
+    legal_signal_patterns:
+      - "security questionnaire"
+      - "infosec sign-off"
+      - "dpa required"
+      - "security review"
+      - "infosec hold"
+
+  - rule_id: PCI-001
+    description: "PCI DSS scope check required before MSA execution"
+    severity: LOW
+    sales_signal_patterns:
+      - "sign"
+      - "renewal"
+      - "execute"
+      - "msa"
+    legal_signal_patterns:
+      - "pci"
+      - "pci dss"
+      - "card data"
+      - "payment card"
