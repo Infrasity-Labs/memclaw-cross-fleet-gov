@@ -1,4 +1,4 @@
-# MemClaw × OpenClaw: Governed Multi-Agent Memory
+# MemClaw Cross Fleet Governance
 
 ![Architecture Diagram](./docs/images/memclaw_banner.jpeg)
 
