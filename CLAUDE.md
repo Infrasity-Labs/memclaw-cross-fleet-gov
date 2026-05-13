@@ -21,13 +21,7 @@ pytest tests/test_isolation.py::test_sales_recall_contains_no_legal_data -v
 python app.py
 
 # Run demos individually (make is not available on Windows — run directly)
-python demo/demo_shared.py
-python demo/demo_boundary.py
-python demo/demo_insights.py
-python demo/demo_audit.py
-python demo/demo_agent_loop.py       # requires AISA_API_KEY
-python demo/demo_audit_trail.py      # requires AISA_API_KEY
-python demo/demo_conflict.py         # requires AISA_API_KEY — Admin Agent conflict demo
+# DEMOS REMOVED
 
 # Docker
 docker compose -f docker/docker-compose.yml up
@@ -75,11 +69,11 @@ Response + AuditLogger.record()
 
 ### Access Matrix
 
-| Agent | fleet-org-shared | fleet-sales | fleet-legal |
-|---|---|---|---|
-| sales-agent-1 | READ/WRITE | READ/WRITE | BLOCKED |
-| legal-agent-1 | READ/WRITE | BLOCKED | READ/WRITE |
-| admin-agent | READ/WRITE | READ | READ |
+| Agent         | fleet-org-shared | fleet-sales | fleet-legal |
+| ------------- | ---------------- | ----------- | ----------- |
+| sales-agent-1 | READ/WRITE       | READ/WRITE  | BLOCKED     |
+| legal-agent-1 | READ/WRITE       | BLOCKED     | READ/WRITE  |
+| admin-agent   | READ/WRITE       | READ        | READ        |
 
 ### Key Files
 
