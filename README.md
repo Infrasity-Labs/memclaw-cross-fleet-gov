@@ -250,10 +250,6 @@ Then add to README near top:
 
 ``` -->
 
-### 2. Screenshots to capture now
-
-Take these screenshots and store with exact names:
-
 1. Show `List available tools` with visible `memclaw_*` tools.
    ![Architecture Diagram](./docs/images/1_memclaw_list_available_tools.png)
 
@@ -330,14 +326,15 @@ If you already have an OpenClaw environment, you can integrate this project by a
 
 ```text
 .
-|-- openclaw.json
-|-- .env.example
-|-- README.md
-|-- agents/
-|   |-- sales-agent/
-|   |-- legal-agent/
-|   `-- admin-agent/
-|-- skills/
-|   `-- memclaw-governance.md
-`-- docs/images/
+├── AGENTS.md
+├── README.md
+├── openclaw.json
+├── agents/
+│   ├── admin-agent/
+│   ├── legal-agent/
+│   └── sales-agent/
+├── docs/
+│   └── images/
+└── skills/
+    └── memclaw-governance.md
 ```
