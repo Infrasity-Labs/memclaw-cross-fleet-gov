@@ -1,346 +1,343 @@
 # MemClaw Cross Fleet Governance
 
-![Architecture Diagram](./docs/images/memclaw_banner.jpeg)
+<p align="center">
+  <img src="./docs/images/memclaw_banner.jpeg" alt="MemClaw Cross Fleet Governance Banner" />
+</p>
 
-> A reference implementation for governed multi-agent memory orchestration using MemClaw and OpenClaw.
+<p align="center">
+  <strong>Governed memory orchestration for multi-agent fleets.</strong><br/>
+  Built with MemClaw + OpenClaw to enforce retrieval boundaries at query-time.
+</p>
 
-This project demonstrates how specialized AI agents can share organizational memory without sharing unrestricted access to the same retrieval layer.
+<p align="center">
+  <img src="https://img.shields.io/badge/Memory-MemClaw-2A9D8F?style=flat-square" alt="MemClaw badge" />
+  <img src="https://img.shields.io/badge/Orchestration-OpenClaw-3A86FF?style=flat-square" alt="OpenClaw badge" />
+  <img src="https://img.shields.io/badge/Governance-Query--Time%20Enforced-1F7A8C?style=flat-square" alt="Governance badge" />
+  <img src="https://img.shields.io/badge/Security-No%20Cross--Scope%20Leakage-264653?style=flat-square" alt="Security badge" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License: MIT" />
+  <a href="https://github.com/Infrasity-Labs/memclaw-cross-fleet-gov/stargazers">
+    <img src="https://img.shields.io/github/stars/Infrasity-Labs/memclaw-cross-fleet-gov?style=flat-square" alt="GitHub stars badge" />
+  </a>
+</p>
 
-Traditional shared RAG systems expose every indexed memory to every agent. MemClaw solves this through fleet-scoped retrieval and governed memory access.
-
-In this architecture:
-
-- Sales agents retrieve commercial context
-- Legal agents retrieve compliance context
-- Admin agents perform cross-fleet synthesis
-
-Unauthorized memories are never retrieved or ranked, which prevents cross-domain leakage before context reaches the model.
-
-This repository showcases:
-
-- Governed memory retrieval
-- Multi-agent context isolation
-- Fleet-scoped recall
-- Cross-fleet orchestration
-- Hybrid semantic + keyword retrieval
-- Trust-aware memory access
-
----
-
-# Shared RAG vs Governed Retrieval
-
-| Shared RAG Systems             | MemClaw Governed Retrieval              |
-| ------------------------------ | --------------------------------------- |
-| Shared retrieval pool          | Fleet-scoped retrieval                  |
-| Prompt-level restrictions      | Query-time enforcement                  |
-| Agents can retrieve everything | Agents retrieve only authorized context |
-| Weak auditability              | Read/write audit trail                  |
-| Retrieval leakage risk         | Governed search boundaries              |
-| Context contamination          | Explicit memory partitions              |
+<p align="center">
+  <a href="#why-memclaw">Why MemClaw</a> |
+  <a href="#mvp-highlights">MVP Highlights</a> |
+  <a href="#architecture">Architecture</a> |
+  <a href="#request-flow">Request Flow</a> |
+  <a href="#tenant-and-fleet-model">Tenant and Fleet Model</a> |
+  <a href="#quickstart">Quickstart</a> |
+  <a href="#governance-validation">Governance Validation</a> |
+  <a href="#capture-demo-media-now">Capture Demo Media Now</a>
+</p>
 
 ---
 
-# Core Concepts
+## Why MemClaw
 
-## MemClaw
+Traditional agent memory systems often operate on a single, flat database. This model presents a critical dilemma in an enterprise setting: either accept total data siloing (amnesia) or risk catastrophic data leakage between departments (e.g., Sales accessing sensitive Legal data).
 
-MemClaw is a governed shared memory platform for AI agent fleets.
+MemClaw resolves this by enforcing access control at the retrieval layer, not just through prompt instructions.
 
-It provides:
+Result:
 
-- Fleet-scoped memory isolation
-- Query-time retrieval enforcement
-- Hybrid semantic + keyword recall
-- Trust-aware retrieval policies
-- Structured memory lifecycle management
-- Auditability for reads and writes
-
-Every memory stored in MemClaw carries governance metadata including:
-
-- `fleet_id`
-- `agent_id`
-- `tenant_id`
-- `visibility_scope`
-- `trust_level`
-
-Core MCP tools used in this repository:
-
-| Tool                 | Purpose                                   |
-| -------------------- | ----------------------------------------- |
-| `memclaw_write`      | Persist governed memory                   |
-| `memclaw_recall`     | Hybrid retrieval with fleet scoping       |
-| `memclaw_manage`     | Update, archive, or delete memory         |
-| `memclaw_list`       | Metadata-based browsing                   |
-| `memclaw_entity_get` | Retrieve entities and graph relationships |
+- unauthorized memories are not retrieved
+- cross-domain leakage is blocked before LLM context assembly
+- every memory operation is auditable
 
 ---
 
-## OpenClaw
+## Key features
 
-OpenClaw acts as the orchestration layer.
-
-It manages:
-
-- Agent sessions
-- Context assembly
-- MCP routing
-- Workspace loading
-- Tool execution
-
-Each agent loads its own:
-
-- `SOUL.md`
-- `AGENTS.md`
-- governance skill
-
-during session startup.
+| Capability              | What You Get                                       |
+| ----------------------- | -------------------------------------------------- |
+| Governed recall         | Fleet-scoped, policy-aware retrieval               |
+| Multi-agent memory      | Shared memory without unrestricted access          |
+| Cross-scope synthesis   | Admin can compare scoped results safely            |
+| Contradiction detection | Conflicts surfaced with source labels              |
+| Operational simplicity  | MCP tools for write, recall, tune, insights, stats |
 
 ---
 
-# System Architecture
+## Shared RAG vs MemClaw Governance
+
+| Shared RAG                      | MemClaw Governance               |
+| ------------------------------- | -------------------------------- |
+| Prompt-only separation          | Query-time enforcement           |
+| Broad retrieval exposure        | Scope-filtered retrieval         |
+| Low traceability                | Audit-friendly memory operations |
+| Easy cross-domain contamination | Hard access boundaries           |
+
+---
+
+## Architecture
 
 ![Architecture Diagram](./docs/images/memclaw%20flow.png)
 
+Components:
+
+- **Agents (OpenClaw)**: `sales-agent`, `legal-agent`, `admin-agent`
+- **Governance Skill**: fleet and response constraints
+- **MemClaw**: governed memory store + retrieval tools
+- **Control Plane**: tenant, fleet, trust, policy metadata
+
 ---
 
-# Repository Structure
+## Request Flow
 
-```text
-.
-├── openclaw.json
-├── .env.example
-├── README.md
-├── agents/
-│   ├── sales-agent/
-│   ├── legal-agent/
-│   └── admin-agent/
-├── skills/
-│   └── memclaw-governance.md
-└── workspace/
-    └── .openclaw/
-        ├── workspace-sales-agent/
-        ├── workspace-legal-agent/
-        └── workspace-admin-agent/
+```mermaid
+flowchart TD
+    A[Agent Query] --> B[OpenClaw Agent]
+    B --> C[memclaw_recall]
+    C --> D{Tenant + Fleet + Trust Check}
+    D -->|Allowed| E[Ranked Memories Returned]
+    D -->|Denied| F[No Accessible Memory]
+    E --> G[LLM Response with Source Labels]
+    F --> G
 ```
 
 ---
 
-# Agent Profiles
+## Tenant and Fleet Model
 
-| Agent         | Fleet Access                                     | Responsibilities                                                        | Restricted From                                      |
-| ------------- | ------------------------------------------------ | ----------------------------------------------------------------------- | ---------------------------------------------------- |
-| `sales-agent` | `fleet-org-shared`, `fleet-sales`                | Renewals, pipeline context, commercial discussions, account health      | Compliance reviews, legal holds, GDPR investigations |
-| `legal-agent` | `fleet-org-shared`, `fleet-legal`                | Compliance reviews, regulatory risk, GDPR workflows, policy enforcement | Pricing strategy, commercial pipeline data           |
-| `admin-agent` | `fleet-org-shared`, `fleet-sales`, `fleet-legal` | Cross-fleet synthesis, governance escalation, contradiction detection   | N/A                                                  |
+Use this model in production:
 
----
+- **Tenant** = organization boundary
+- **Fleet** = access boundary inside that tenant
+- **Agent trust** = operation and visibility level
 
-# The Governance Skill
+### Recommended for this repo (governance demo)
 
-`skills/memclaw-governance.md` acts as the shared behavioral contract across all agents.
+- One tenant (shared org tenant)
+- Multiple fleets:
+  - `fleet-sales`
+  - `fleet-legal`
+  - `fleet-org-shared`
 
-It defines:
+### Strict isolation mode (advanced)
 
-- retrieval conventions
-- fleet-scoping rules
-- write protocols
-- governance constraints
+Use separate tenants per domain, then let admin do explicit fan-out recall:
 
-Core rules:
-
-1. Always pass `fleet_ids` as arrays
-2. Recall before entity-specific responses
-3. Persist durable context
-4. Write to the correct fleet
-5. Do not infer across inaccessible scopes
+1. Recall from tenant A/fleet A.
+2. Recall from tenant B/fleet B.
+3. Merge with provenance labels.
+4. Write synthesis to governance scope.
 
 ---
 
-# Installation
+## Agent Scope Matrix
 
-## Clone the repository
+| Agent         | Allowed Fleets                                   | Primary Responsibility                  | Must Not Access                |
+| ------------- | ------------------------------------------------ | --------------------------------------- | ------------------------------ |
+| `sales-agent` | `fleet-sales`, `fleet-org-shared`                | Commercial context and pipeline updates | Legal-only compliance memory   |
+| `legal-agent` | `fleet-legal`, `fleet-org-shared`                | Holds, regulatory context, risk signals | Sales-only commercial strategy |
+| `admin-agent` | `fleet-sales`, `fleet-legal`, `fleet-org-shared` | Cross-fleet synthesis and escalation    | N/A                            |
+
+---
+
+## Prerequisites
+
+- [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/en/) (for OpenClaw CLI)
+- An active [MemClaw](https://memclaw.net/) account
+
+---
+
+## Quickstart
+
+### 1. Clone
 
 ```bash
-git clone https://github.com/your-org/memclaw-cross-fleet-gov.git
+git clone https://github.com/Infrasity-Labs/memclaw-cross-fleet-gov.git
 cd memclaw-cross-fleet-gov
 ```
 
-## Configure environment variables
-
-```bash
-cp .env.example .env
-```
+### 2. Configure environment
 
 ```env
-MEMCLAW_API_KEY=your_api_key
-MEMCLAW_API_URL=http://localhost:8000
+MEMCLAW_API_KEY=...
+MEMCLAW_TENANT_ID=...
+MEMCLAW_BASE_URL=https://memclaw.net/api/v1
+
+AISA_API_KEY=...
+AISA_BASE_URL=https://api.aisa.one/v1
 ```
 
-## Configure fleets
-
-```bash
-curl -X PATCH http://localhost:8000/api/v1/agents/sales-agent \
--H "Content-Type: application/json" \
--d '{"fleet_id":"fleet-sales","trust_level":2}'
-```
-
-```bash
-curl -X PATCH http://localhost:8000/api/v1/agents/legal-agent \
--H "Content-Type: application/json" \
--d '{"fleet_id":"fleet-legal","trust_level":3}'
-```
-
-```bash
-curl -X PATCH http://localhost:8000/api/v1/agents/admin-agent \
--H "Content-Type: application/json" \
--d '{"fleet_id":"fleet-admin","trust_level":3}'
-```
-
-## Start the gateway
+### 3. Start OpenClaw
 
 ```bash
 openclaw gateway
-```
-
-## Open a session
-
-```bash
 openclaw chat --session governance-demo
 ```
 
+### 4. Confirm MemClaw tools are available
+
+```text
+List available tools.
+```
+
+Expected: tools include `memclaw_recall`, `memclaw_write`, `memclaw_stats`, and other `memclaw_*` tools.
+
 ---
 
-# Verification
+## Governance Validation
 
-## Write governed memory
+### A. Write legal-only memory
 
 ```text
 /agent legal-agent
-```
-
-```text
 Use memclaw_write to store:
-"Stratus Aero compliance review identified unresolved export-control restrictions affecting aerospace telemetry datasets."
-
+"Governance test: Nimbus Bio is under active GDPR hold pending DPO sign-off."
 Fleet: fleet-legal
 ```
 
-## Successful retrieval
-
-```text
-Use memclaw_recall to summarize Stratus Aero compliance review.
-```
-
-Expected:
-
-- export-control restrictions
-- aerospace telemetry datasets
-- legal-context retrieval
-
----
-
-## Governance isolation test
+### B. Sales should not see it
 
 ```text
 /agent sales-agent
+Use memclaw_recall with fleet_ids ["fleet-sales","fleet-org-shared"] for "Nimbus Bio GDPR hold"
+```
+
+Expected: empty or denied for legal-only memory.
+
+### C. Legal should see it
+
+```text
+/agent legal-agent
+Use memclaw_recall with fleet_ids ["fleet-legal","fleet-org-shared"] for "Nimbus Bio GDPR hold"
+```
+
+Expected: memory is returned.
+
+### D. Admin conflict synthesis
+
+```text
+/agent sales-agent
+Use memclaw_write to store:
+"Nimbus Bio renewal is in final commercial negotiation."
+Fleet: fleet-sales
 ```
 
 ```text
-Use memclaw_recall to summarize Stratus Aero compliance review.
+/agent admin-agent
+Use memclaw_recall with fleet_ids ["fleet-sales","fleet-legal","fleet-org-shared"] for "Nimbus Bio status"
 ```
 
-Expected:
-
-- no accessible memories
-- retrieval denial
-- fleet isolation enforcement
+Expected: admin sees both contexts and can report contradiction with fleet labels.
 
 ---
 
-# Cross-Fleet Conflict Detection
+<!-- ## Capture Demo Media Now
 
-The admin agent enables cross-fleet synthesis.
+This section replaces placeholder demo media. Capture these assets now and commit them under `docs/images/`.
 
-Example:
+### 1. GIF to record
+
+Record a short terminal walkthrough (`20-40s`) showing:
+
+1. legal write (`fleet-legal`)
+2. sales recall denied/empty
+3. legal recall success
+4. admin recall showing cross-fleet context
+
+Save as:
+
+- `docs/images/governance-demo.gif`
+
+Then add to README near top:
+
+```md
+
+``` -->
+
+### 2. Screenshots to capture now
+
+Take these screenshots and store with exact names:
+
+1. Show `List available tools` with visible `memclaw_*` tools.
+   ![Architecture Diagram](./docs/images/1_memclaw_list_available_tools.png)
+
+2. Use `memclaw_write` to write memory in sales-agent
+   ![Architecture Diagram](./docs/images/2_memclaw_write_sales_agent.png)
+
+3. use `memclaw_write` to write memory in leval-agent
+   ![Architecture Diagram](./docs/images/legal-agent-memclaw-write.png)
+
+4. Use `memclaw_write` to write memory in admin-agent
+5. ![Architecture Diagram](./docs/images/admin-agent-write.png)
+
+---
+
+## OpenClaw Setup
+
+This guide provides setup instructions for both new and existing OpenClaw users.
+
+### For New OpenClaw Users (No Existing Fleet)
+
+If you are new to OpenClaw, you'll need to initialize your configuration first.
+
+1.  **Initialize OpenClaw:**
+    This command creates the necessary configuration files in your home directory (`~/.openclaw`).
+
+    ```bash
+    openclaw init
+    ```
+
+2.  **Create a New Fleet:**
+    A fleet is a collection of agents that work together. For this demo, you can create a new fleet with the following command.
+
+    ```bash
+    openclaw fleets create --name governance-demo-fleet --description "Fleet for MemClaw Governance Demo"
+    ```
+
+3.  **Follow the Quickstart:**
+    Once your fleet is created, you can proceed with the [Quickstart](#quickstart) section, making sure your `openclaw.json` is configured to use the agents in this repository.
+
+### For Existing OpenClaw Users
+
+If you already have an OpenClaw environment, you can integrate this project by adding the agents to your existing configuration.
+
+1.  **Ensure `openclaw.json` is Correct:**
+    Make sure the `openclaw.json` in this repository points to the correct agent directories. The paths should be relative, like `./agents/sales-agent`.
+
+2.  **Run `openclaw doctor`:**
+    To ensure all configurations are correctly loaded and there are no path issues, run the doctor command.
+
+    ```bash
+    openclaw doctor --fix
+    ```
+
+3.  **Start the Session:**
+    You can now start a chat session as described in the [Quickstart](#quickstart).
+
+### General Setup Notes
+
+- If you encounter interactive onboarding issues, running `openclaw doctor --fix` can often resolve them.
+- Always use relative paths for agent workspaces in your `openclaw.json` file (e.g., `./agents/...`).
+- Ensure your model provider is stable before enabling additional plugins.
+
+---
+
+## Security Notes
+
+- Never commit live API keys.
+- Rotate keys exposed in terminal logs or chat.
+- Keep `MEMCLAW_BASE_URL` on HTTPS for hosted deployments.
+
+---
+
+## Repository Layout
 
 ```text
-fleet-sales:
-  HealthSystem Inc renewal in negotiation
-
-fleet-legal:
-  HealthSystem Inc blocked by GDPR compliance hold
-```
-
-The sales agent sees only commercial context.
-
-The legal agent sees only compliance context.
-
-The admin agent sees both.
-
-This enables:
-
-- contradiction detection
-- governance escalation
-- enterprise-wide synthesis
-
----
-
-# Troubleshooting
-
-## Retrieval hangs indefinitely
-
-Most common cause:
-
-```text
-Rejected workspace path outside openclawDir
-```
-
-Fix:
-
-- use relative workspace paths
-- avoid malformed Windows absolute paths
-- restart the gateway after config updates
-
-Recommended workspace config:
-
-```json
-{
-  "id": "legal-agent",
-  "workspace": "./workspace/.openclaw/workspace-legal-agent"
-}
-```
-
----
-
-## Gateway restart fails
-
-```powershell
-taskkill /F /IM node.exe
-```
-
-Then restart:
-
-```bash
-openclaw gateway
-```
-
----
-
-## No memories returned
-
-Check:
-
-- fleet configuration
-- trust levels
-- memory counts
-- active gateway session
-
----
-
-## Context instability
-
-Avoid reusing overloaded sessions.
-
-```bash
-openclaw chat --session clean-demo
+.
+|-- openclaw.json
+|-- .env.example
+|-- README.md
+|-- agents/
+|   |-- sales-agent/
+|   |-- legal-agent/
+|   `-- admin-agent/
+|-- skills/
+|   `-- memclaw-governance.md
+`-- docs/images/
 ```
