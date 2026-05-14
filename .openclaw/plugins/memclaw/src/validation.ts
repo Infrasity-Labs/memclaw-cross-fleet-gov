@@ -48,11 +48,15 @@ export function warnIfInsecureUrl(apiUrl: string, apiKey: string): void {
 
 export function isContainedPath(child: string, parent: string): boolean {
   try {
-    const resolvedChild = existsSync(child) ? realpathSync(child) : resolve(child);
-    const resolvedParent = existsSync(parent) ? realpathSync(parent) : resolve(parent);
+    // Use resolve() rather than realpathSync() so Windows junctions/symlinks
+    // pointing outside the base dir are not dereferenced — the junction itself
+    // lives inside openclawDir and that's the containment we care about.
+    const resolvedChild = resolve(child);
+    const resolvedParent = resolve(parent);
+    const sep = resolvedParent.includes("\\") ? "\\" : "/";
     return (
       resolvedChild === resolvedParent ||
-      resolvedChild.startsWith(resolvedParent + "/")
+      resolvedChild.startsWith(resolvedParent + sep)
     );
   } catch {
     return false;

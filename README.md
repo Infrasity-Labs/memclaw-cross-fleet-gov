@@ -11,6 +11,10 @@
 </p>
 
 <p align="center">
+  <strong>New here?</strong> <a href="#what-is-openclaw">OpenClaw</a> is the agent orchestration layer. <a href="#what-is-memclaw">MemClaw</a> is the governed memory backend. This repo wires them together.
+</p>
+
+<p align="center">
   <a href="https://memclaw.net/docs"><img src="https://img.shields.io/badge/docs-memclaw.net-2A9D8F?style=flat-square" /></a>
   <a href="https://github.com/caura-ai/caura-memclaw"><img src="https://img.shields.io/badge/Memory-MemClaw-2A9D8F?style=flat-square" /></a>
   <img src="https://img.shields.io/badge/Orchestration-OpenClaw-3A86FF?style=flat-square" />
@@ -27,6 +31,7 @@
   <a href="#agent-scope-matrix">Agent Scope</a> ·
   <a href="#quickstart">Quickstart</a> ·
   <a href="#governance-validation">Validation</a> ·
+  <a href="#creating-a-new-fleet">New Fleet</a> ·
   <a href="https://memclaw.net/docs">Docs</a>
 </p>
 
@@ -34,6 +39,19 @@
 
 > *Three agents. One memory backend. Zero cross-scope leakage.*  
 > Sales sees pipeline. Legal sees compliance. Admin sees everything — and surfaces the conflicts.
+
+---
+
+## What is OpenClaw
+
+[OpenClaw](https://www.stack-junkie.com/blog/openclaw-system-prompt-design-guide) is an open-source agent orchestration gateway. It runs locally as a daemon, registers named agents from workspace directories, and exposes them through a unified chat interface and API. Each agent has its own workspace — a directory containing identity files (`SOUL.md`, `AGENTS.md`, `IDENTITY.md`) that are injected as system context at session start — and its own plugin bindings (MCP servers, memory backends, tools).
+
+In this repo, OpenClaw is doing three things:
+- **Routing** — `/agent sales-agent` targets a specific registered agent
+- **Context injection** — loads each agent's `SOUL.md` and `AGENTS.md` before the first message
+- **Plugin wiring** — registers the MemClaw MCP server so agents can call `memclaw_*` tools natively as tool calls
+
+Install it with: `npm install -g openclaw@latest`
 
 ---
 
@@ -215,6 +233,7 @@ MemClaw exposes its full capability surface through 10 MCP tools. OpenClaw regis
   - `fleet-org-shared`
   - `fleet-sales`
   - `fleet-legal`
+- An [AISA API key](https://aisa.one) for DeepSeek V3 model access
 
 > **New to MemClaw?** Sign up at [memclaw.net](https://memclaw.net) — managed platform, no infrastructure needed. Get your API key from the dashboard and provision the three fleets above before running the gateway. Self-hosted option available via [caura-memclaw](https://github.com/caura-ai/caura-memclaw).
 
@@ -240,6 +259,10 @@ MEMCLAW_API_KEY=mc_...
 MEMCLAW_TENANT_ID=your-tenant-id
 MEMCLAW_API_URL=https://memclaw.net/api/v1
 MEMCLAW_AUTO_WRITE_TURNS=false
+
+AISA_API_KEY=sk-...
+AISA_MODEL=deepseek-v3
+AISA_BASE_URL=https://api.aisa.one/v1
 ```
 
 ### 3. Deploy agent workspaces
@@ -385,6 +408,82 @@ For strict isolation (advanced), provision separate tenants per domain and have 
 2. Recall from tenant-B / fleet-B
 3. Merge with source labels
 4. Write synthesis to governance scope
+
+---
+
+## Creating a New Fleet
+
+To add a fourth agent scope (e.g. `fleet-engineering`) without touching existing agents:
+
+### 1. Provision the fleet in MemClaw
+
+Log in to [memclaw.net](https://memclaw.net) → your tenant → **Fleets** → **New Fleet**. Set the fleet ID to match what you'll use in code (e.g. `fleet-engineering`). Copy the fleet ID — you'll need it in the next steps.
+
+### 2. Create an agent workspace
+
+```bash
+mkdir -p agents/engineering-agent
+```
+
+Create `agents/engineering-agent/SOUL.md` (persona), `AGENTS.md` (fleet scope + tool rules), and `IDENTITY.md` (fleet identity). Use an existing agent's files as a template:
+
+```bash
+# macOS / Linux
+cp agents/sales-agent/SOUL.md agents/engineering-agent/SOUL.md
+cp agents/sales-agent/AGENTS.md agents/engineering-agent/AGENTS.md
+cp agents/sales-agent/IDENTITY.md agents/engineering-agent/IDENTITY.md
+```
+
+Edit each file and replace all references to `sales-agent` / `fleet-sales` with `engineering-agent` / `fleet-engineering`.
+
+### 3. Copy the shared governance skill
+
+```bash
+# macOS / Linux
+mkdir -p agents/engineering-agent/skills
+cp skills/memclaw-governance.md agents/engineering-agent/skills/
+```
+
+### 4. Deploy the workspace
+
+**macOS / Linux**
+```bash
+cp -r agents/engineering-agent ~/.openclaw/workspace-engineering-agent
+```
+
+**Windows (PowerShell — run as admin)**
+```powershell
+New-Item -ItemType Junction -Path "$HOME\.openclaw\workspace-engineering-agent" `
+  -Target "E:\WORK\memclaw\memclaw-cross-fleet-gov\agents\engineering-agent"
+```
+
+### 5. Register the agent in `openclaw.json`
+
+Add a new entry to the `agents.list` array in `.openclaw/openclaw.json`:
+
+```json
+{ "id": "engineering-agent", "workspace": "workspace-engineering-agent" }
+```
+
+### 6. Restart the gateway and verify
+
+```bash
+openclaw gateway restart
+openclaw agents list --bindings   # engineering-agent should appear
+```
+
+### 7. Validate fleet isolation
+
+```
+/agent engineering-agent
+
+Use memclaw_recall with:
+  fleet_ids: ["fleet-engineering", "fleet-org-shared"]
+  query: "test"
+  agent_id: "engineering-agent"
+```
+
+Expected: only memories in `fleet-engineering` and `fleet-org-shared` are returned. Other fleets are structurally excluded.
 
 ---
 
