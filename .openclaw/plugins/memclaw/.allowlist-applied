@@ -1,0 +1,7 @@
+{
+  "appliedAt": "2026-05-12T20:07:06.209Z",
+  "changed": true,
+  "changes": [
+    "plugins.load.paths"
+  ]
+}

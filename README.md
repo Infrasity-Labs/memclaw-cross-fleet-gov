@@ -1,145 +1,276 @@
-# MemClaw Cross Fleet Governance
+<p align="center">
+  <img src="./docs/images/memclaw_banner.jpeg" alt="MemClaw Cross-Fleet Governance" width="100%" />
+</p>
+
+<h1 align="center">MemClaw Cross-Fleet Governed Memory</h1>
 
 <p align="center">
-  <img src="./docs/images/memclaw_banner.jpeg" alt="MemClaw Cross Fleet Governance Banner" />
+  <strong>MemClaw gives multi-agent fleets governed, shared, self-improving memory.</strong><br/>
+  This repo shows MemClaw enforcing fleet-scoped memory boundaries across three OpenClaw agents<br/>
+  <em>at query-time, at the storage layer, before any LLM sees the data.</em>
 </p>
 
 <p align="center">
-  <strong>Governed memory orchestration for multi-agent fleets.</strong><br/>
-  Built with MemClaw + OpenClaw to enforce retrieval boundaries at query-time.
+  <a href="https://memclaw.net/docs"><img src="https://img.shields.io/badge/docs-memclaw.net-2A9D8F?style=flat-square" /></a>
+  <a href="https://github.com/caura-ai/caura-memclaw"><img src="https://img.shields.io/badge/Memory-MemClaw-2A9D8F?style=flat-square" /></a>
+  <img src="https://img.shields.io/badge/Orchestration-OpenClaw-3A86FF?style=flat-square" />
+  <img src="https://img.shields.io/badge/Isolation-Query--Time%20Enforced-E76F51?style=flat-square" />
+  <img src="https://img.shields.io/badge/Leakage-Zero%20Cross--Scope-264653?style=flat-square" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" /></a>
+  <a href="https://github.com/Infrasity-Labs/memclaw-cross-fleet-gov/stargazers"><img src="https://img.shields.io/github/stars/Infrasity-Labs/memclaw-cross-fleet-gov?style=flat-square" /></a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Memory-MemClaw-2A9D8F?style=flat-square" alt="MemClaw badge" />
-  <img src="https://img.shields.io/badge/Orchestration-OpenClaw-3A86FF?style=flat-square" alt="OpenClaw badge" />
-  <img src="https://img.shields.io/badge/Governance-Query--Time%20Enforced-1F7A8C?style=flat-square" alt="Governance badge" />
-  <img src="https://img.shields.io/badge/Security-No%20Cross--Scope%20Leakage-264653?style=flat-square" alt="Security badge" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License: MIT" />
-  <a href="https://github.com/Infrasity-Labs/memclaw-cross-fleet-gov/stargazers">
-    <img src="https://img.shields.io/github/stars/Infrasity-Labs/memclaw-cross-fleet-gov?style=flat-square" alt="GitHub stars badge" />
-  </a>
-</p>
-
-<p align="center">
-  <a href="#why-memclaw">Why MemClaw</a> |
-  <a href="#mvp-highlights">MVP Highlights</a> |
-  <a href="#architecture">Architecture</a> |
-  <a href="#request-flow">Request Flow</a> |
-  <a href="#tenant-and-fleet-model">Tenant and Fleet Model</a> |
-  <a href="#quickstart">Quickstart</a> |
-  <a href="#governance-validation">Governance Validation</a> |
-  <a href="#capture-demo-media-now">Capture Demo Media Now</a>
+  <a href="#the-problem">The Problem</a> ·
+  <a href="#how-it-works">How It Works</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#agent-scope-matrix">Agent Scope</a> ·
+  <a href="#quickstart">Quickstart</a> ·
+  <a href="#governance-validation">Validation</a> ·
+  <a href="https://memclaw.net/docs">Docs</a>
 </p>
 
 ---
 
-## Why MemClaw
-
-Traditional agent memory systems often operate on a single, flat database. This model presents a critical dilemma in an enterprise setting: either accept total data siloing (amnesia) or risk catastrophic data leakage between departments (e.g., Sales accessing sensitive Legal data).
-
-MemClaw resolves this by enforcing access control at the retrieval layer, not just through prompt instructions.
-
-Result:
-
-- unauthorized memories are not retrieved
-- cross-domain leakage is blocked before LLM context assembly
-- every memory operation is auditable
+> *Three agents. One memory backend. Zero cross-scope leakage.*  
+> Sales sees pipeline. Legal sees compliance. Admin sees everything — and surfaces the conflicts.
 
 ---
 
-## Key features
+## What is MemClaw
 
-| Capability              | What You Get                                       |
-| ----------------------- | -------------------------------------------------- |
-| Governed recall         | Fleet-scoped, policy-aware retrieval               |
-| Multi-agent memory      | Shared memory without unrestricted access          |
-| Cross-scope synthesis   | Admin can compare scoped results safely            |
-| Contradiction detection | Conflicts surfaced with source labels              |
-| Operational simplicity  | MCP tools for write, recall, tune, insights, stats |
+[MemClaw](https://memclaw.net) is open-source fleet memory for AI agents — governed, shared, and self-improving. Agents write plain text. MemClaw turns it into searchable, governed, structured memory with automatic enrichment, lifecycle management, and cross-agent knowledge sharing.
+
+**The core loop: write → recall → compound.** Every interaction makes the next one smarter.
+
+What makes MemClaw different from a vector database:
+
+| Capability | What it means |
+|---|---|
+| **Fleet isolation** | Memory partitioned by `fleet_id`. Boundaries are query predicates at the storage layer — not prompt instructions |
+| **LLM enrichment on write** | Every `memclaw_write` auto-classifies type, generates title/summary/tags, scans PII, extracts entities, detects contradictions — from a single `content` field |
+| **Hybrid recall** | `memclaw_recall` combines vector similarity, keyword search, and knowledge graph traversal in one call |
+| **8-status lifecycle** | Memories move through `active → confirmed → outdated → superseded → archived` automatically |
+| **Crystallizer** | LLM batch process that merges near-duplicate memories into canonical atomic facts with full provenance |
+| **Audit trail** | Every read and write logged — "which agent recalled this memory and when" is always answerable |
+| **Karpathy Loop** | Agents report outcomes via `memclaw_evolve`; the system reinforces what works and generates preventive rules on failure |
+
+This repo is a **use-case implementation** — three OpenClaw agents (Sales, Legal, Admin) operating against a single MemClaw tenant with three fleet partitions, showing what MemClaw's governance layer looks like in a real multi-agent deployment.
+
+<p align="center">
+  <a href="https://github.com/caura-ai/caura-memclaw"><strong>→ MemClaw source (Apache 2.0)</strong></a> ·
+  <a href="https://memclaw.net/docs"><strong>→ Documentation</strong></a> ·
+  <a href="https://memclaw.net"><strong>→ Get an API key</strong></a>
+</p>
 
 ---
 
-## Shared RAG vs MemClaw Governance
+## The Problem
 
-| Shared RAG                      | MemClaw Governance               |
-| ------------------------------- | -------------------------------- |
-| Prompt-only separation          | Query-time enforcement           |
-| Broad retrieval exposure        | Scope-filtered retrieval         |
-| Low traceability                | Audit-friendly memory operations |
-| Easy cross-domain contamination | Hard access boundaries           |
+In enterprise multi-agent deployments, agents typically share a flat memory pool. This creates a hard choice:
+
+| Approach | Problem |
+|---|---|
+| Total memory siloing | Agents repeat work, miss shared context, have amnesia |
+| Open shared memory | Sales reads Legal holds. Legal reads negotiation ceilings. Data leaks. |
+| Prompt-level separation | "Don't mention compliance data" — the data still passes through recall. LLMs can still surface it. |
+
+**MemClaw resolves this at the retrieval layer.** Fleet boundaries are enforced as query predicates before the hybrid search runs. An agent cannot surface what it was never given. No prompt engineering required — the guarantee is structural.
+
+---
+
+## How MemClaw Enforces Fleet Boundaries
+
+Every recall call passes through MemClaw's fleet filter before the search executes:
+
+```
+Agent calls memclaw_recall(fleet_ids=["fleet-sales", "fleet-org-shared"])
+                                │
+                                ▼
+              MemClaw applies: WHERE fleet_id IN ('fleet-sales', 'fleet-org-shared')
+                                │
+                      ┌─────────┴──────────┐
+                      │  Search executes   │
+                      │  inside boundary   │
+                      └─────────┬──────────┘
+                                │
+              fleet-legal records → never searched, never scored, never returned
+                                │
+                                ▼
+                    Ranked results returned to agent
+```
+
+This is not a prompt rule. It is a database predicate inside MemClaw's storage layer. The enforcement happens before any LLM sees the data — before context assembly, before scoring, before ranking.
 
 ---
 
 ## Architecture
 
-![Architecture Diagram](./docs/images/memclaw%20flow.png)
+<p align="center">
+  <img src="./docs/images/memclaw flow.png" alt="Architecture Diagram" width="85%" />
+</p>
 
-Components:
-
-- **Agents (OpenClaw)**: `sales-agent`, `legal-agent`, `admin-agent`
-- **Governance Skill**: fleet and response constraints
-- **MemClaw**: governed memory store + retrieval tools
-- **Control Plane**: tenant, fleet, trust, policy metadata
-
----
-
-## Request Flow
-
-```mermaid
-flowchart TD
-    A[Agent Query] --> B[OpenClaw Agent]
-    B --> C[memclaw_recall]
-    C --> D{Tenant + Fleet + Trust Check}
-    D -->|Allowed| E[Ranked Memories Returned]
-    D -->|Denied| F[No Accessible Memory]
-    E --> G[LLM Response with Source Labels]
-    F --> G
+```
+                        User
+                          │
+                          ▼
+          ┌────────────────────────────────────┐
+          │          OpenClaw Gateway           │
+          │  Session mgmt · agent dispatch      │
+          │  MCP routing · context assembly     │
+          └────────────────────────────────────┘
+               │               │               │
+               ▼               ▼               ▼
+     ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+     │ sales-agent  │  │ legal-agent  │  │ admin-agent  │
+     │              │  │              │  │              │
+     │ SOUL.md      │  │ SOUL.md      │  │ SOUL.md      │
+     │ AGENTS.md    │  │ AGENTS.md    │  │ AGENTS.md    │
+     │ governance ↓ │  │ governance ↓ │  │ governance ↓ │
+     └──────┬───────┘  └──────┬───────┘  └──────┬───────┘
+            │                 │                  │
+            └─────────────────┼──────────────────┘
+                              │  tool calls
+                              ▼
+           ┌──────────────────────────────────┐
+           │        MemClaw MCP Server         │
+           │  memclaw_recall · memclaw_write   │
+           │  memclaw_manage · memclaw_insights│
+           └──────────────────────────────────┘
+                              │
+             ◄─ fleet_ids enforcement boundary ─►
+                              │
+         ┌────────────────────┼────────────────────┐
+         ▼                    ▼                     ▼
+  ┌─────────────┐    ┌──────────────┐    ┌──────────────┐
+  │fleet-org-   │    │ fleet-sales  │    │ fleet-legal  │
+  │shared       │    │              │    │              │
+  │All agents   │    │Sales + Admin │    │Legal + Admin │
+  └─────────────┘    └──────────────┘    └──────────────┘
+         │                    │                     │
+         └────────────────────┼─────────────────────┘
+                              │
+                              ▼
+         ┌────────────────────────────────────────┐
+         │           pgvector memory store         │
+         │  Row-level isolation · hybrid search    │
+         │  8-status lifecycle · audit trail       │
+         │  Knowledge graph · crystallizer         │
+         └────────────────────────────────────────┘
+                              │
+                              │  LLM enrichment on every write
+                              ▼
+         ┌────────────────────────────────────────┐
+         │              LLM Gateway               │
+         │  Inference · enrichment · extraction   │
+         └────────────────────────────────────────┘
 ```
 
 ---
 
-## Tenant and Fleet Model
+## Demo
 
-Use this model in production:
+### 1. MemClaw tools available in session
 
-- **Tenant** = organization boundary
-- **Fleet** = access boundary inside that tenant
-- **Agent trust** = operation and visibility level
+![List available tools](./docs/images/1_memclaw_list_available_tools.png)
 
-### Recommended for this repo (governance demo)
+### 2. Sales agent writes to `fleet-sales`
 
-- One tenant (shared org tenant)
-- Multiple fleets:
-  - `fleet-sales`
-  - `fleet-legal`
-  - `fleet-org-shared`
+![Sales agent write](./docs/images/2_memclaw_write_sales_agent.png)
 
-### Strict isolation mode (advanced)
+### 3. Legal agent writes to `fleet-legal`
 
-Use separate tenants per domain, then let admin do explicit fan-out recall:
+![Legal agent write](./docs/images/legal-agent-memclaw-write.png)
 
-1. Recall from tenant A/fleet A.
-2. Recall from tenant B/fleet B.
-3. Merge with provenance labels.
-4. Write synthesis to governance scope.
+### 4. Admin agent recalls cross-fleet — sees the conflict
+
+![Admin agent cross-fleet recall](./docs/images/admin-agent-write.png)
+
+> **The conflict:** `fleet-sales` shows HealthSystem Inc renewal in active negotiation at $420k. `fleet-legal` shows a GDPR hold blocking any contract renewal. Only the admin agent sees both — because only it declares both fleets in its `memclaw_recall` call. MemClaw's `memclaw_insights` with `focus: "contradictions"` surfaces this automatically as a detected conflict with source fleet labels attached.
 
 ---
 
 ## Agent Scope Matrix
 
-| Agent         | Allowed Fleets                                   | Primary Responsibility                  | Must Not Access                |
-| ------------- | ------------------------------------------------ | --------------------------------------- | ------------------------------ |
-| `sales-agent` | `fleet-sales`, `fleet-org-shared`                | Commercial context and pipeline updates | Legal-only compliance memory   |
-| `legal-agent` | `fleet-legal`, `fleet-org-shared`                | Holds, regulatory context, risk signals | Sales-only commercial strategy |
-| `admin-agent` | `fleet-sales`, `fleet-legal`, `fleet-org-shared` | Cross-fleet synthesis and escalation    | N/A                            |
+| Agent | Fleet Access | Primary Use | Hard Boundary |
+|---|---|---|---|
+| `sales-agent` | `fleet-sales` · `fleet-org-shared` | Pipeline, renewals, deal stage | Cannot access `fleet-legal` |
+| `legal-agent` | `fleet-legal` · `fleet-org-shared` | Holds, compliance, risk flags | Cannot access `fleet-sales` |
+| `admin-agent` | All three fleets | Cross-fleet synthesis, conflict detection | None |
+
+---
+
+## MemClaw MCP Tools
+
+MemClaw exposes its full capability surface through 10 MCP tools. OpenClaw registers these at gateway start — agents call them as standard tool calls.
+
+| Tool | What it does |
+|---|---|
+| `memclaw_write` | Store memory with auto-enrichment — type, title, tags, PII scan, entity extraction, contradiction check |
+| `memclaw_recall` | Hybrid vector + keyword search scoped to declared `fleet_ids` |
+| `memclaw_manage` | Read, update, transition, or delete a specific memory |
+| `memclaw_list` | Browse by metadata — type, status, agent, date |
+| `memclaw_insights` | LLM-powered reflection — surface contradictions, stale data, failure patterns |
+| `memclaw_stats` | Aggregate counts by type, agent, status |
+| `memclaw_evolve` | Report outcomes against recalled memories — closes the learning loop |
+| `memclaw_keystones` | Load mandatory governance rules for the current fleet scope |
+
+**Memory lifecycle:** MemClaw moves every memory through `active → confirmed → outdated → superseded → archived` automatically based on contradiction detection and outcome feedback. No manual cleanup.
+
+**Crystallizer:** MemClaw's LLM batch process merges near-duplicate memories into canonical atomic facts with full provenance retained. Runs nightly or on-demand.
+
+**Karpathy Loop:** agents call `memclaw_evolve` to report whether a recalled memory led to a good outcome. MemClaw reinforces memories that work and auto-generates preventive `rule`-type memories on failure — the fleet learns from every interaction.
+
+---
+
+## Why MemClaw — Not Just a Vector DB
+
+| | Shared RAG | MemClaw Fleet Governance |
+|---|---|---|
+| Separation mechanism | Prompt instruction | Query predicate — enforced at storage layer |
+| Retrieval scope | Broad — all vectors searched | Narrow — `fleet_ids` filter before search |
+| Cross-agent leakage | Possible if prompt is ignored | Structurally impossible — data outside fleet is never retrieved |
+| Audit trail | None | Every read and write logged |
+| Contradiction detection | Manual | Automatic on write — RDF triple comparison + LLM analysis |
+
+---
+
+## Repository Structure
+
+```
+.
+├── openclaw.json                   ← Gateway config: model, agents, MCP server
+├── .env.example
+├── agents/
+│   ├── sales-agent/
+│   │   ├── SOUL.md                 ← Personality, tone, hard limits
+│   │   └── AGENTS.md               ← Fleet scope, recall protocol, write rules
+│   ├── legal-agent/
+│   │   ├── SOUL.md
+│   │   └── AGENTS.md
+│   └── admin-agent/
+│       ├── SOUL.md
+│       └── AGENTS.md
+└── skills/
+    └── memclaw-governance.md       ← Shared skill: fleet_ids rules, recall + write protocol
+```
+
+**`SOUL.md`** is injected first on every session — defines who the agent is.  
+**`AGENTS.md`** is injected second — defines what the agent does, which fleets it can access, and how it uses MemClaw.  
+**`memclaw-governance.md`** is a shared skill copied into every agent workspace. Update once, redeploy to all agents.
 
 ---
 
 ## Prerequisites
 
-- [Git](https://git-scm.com/)
-- [Node.js](https://nodejs.org/en/) (for OpenClaw CLI)
-- An active [MemClaw](https://memclaw.net/) account
+- [Node.js 24+](https://nodejs.org/)
+- OpenClaw CLI: `npm install -g openclaw@latest`
+- A [MemClaw account](https://memclaw.net) with API key and three fleets provisioned:
+  - `fleet-org-shared`
+  - `fleet-sales`
+  - `fleet-legal`
+
+> **New to MemClaw?** Sign up at [memclaw.net](https://memclaw.net) — managed platform, no infrastructure needed. Get your API key from the dashboard and provision the three fleets above before running the gateway. Self-hosted option available via [caura-memclaw](https://github.com/caura-ai/caura-memclaw).
 
 ---
 
@@ -154,187 +285,214 @@ cd memclaw-cross-fleet-gov
 
 ### 2. Configure environment
 
-```env
-MEMCLAW_API_KEY=...
-MEMCLAW_TENANT_ID=...
-MEMCLAW_BASE_URL=https://memclaw.net/api/v1
-
-AISA_API_KEY=...
-AISA_BASE_URL=https://api.aisa.one/v1
+```bash
+cp .env.example .env
 ```
 
-### 3. Start OpenClaw
+```env
+MEMCLAW_API_KEY=mc_...
+MEMCLAW_TENANT_ID=your-tenant-id
+MEMCLAW_API_URL=https://memclaw.net/api/v1
+MEMCLAW_AUTO_WRITE_TURNS=false
+```
+
+### 3. Deploy agent workspaces
+
+**macOS / Linux**
+```bash
+cp -r agents/sales-agent ~/.openclaw/workspace-sales-agent
+cp -r agents/legal-agent ~/.openclaw/workspace-legal-agent
+cp -r agents/admin-agent ~/.openclaw/workspace-admin-agent
+
+for agent in sales-agent legal-agent admin-agent; do
+  mkdir -p ~/.openclaw/workspace-$agent/skills
+  cp skills/memclaw-governance.md ~/.openclaw/workspace-$agent/skills/
+done
+```
+
+**Windows (PowerShell — run as admin)**
+```powershell
+# Create junctions so OpenClaw resolves paths correctly
+New-Item -ItemType Junction -Path "$HOME\.openclaw\workspace-sales-agent" `
+  -Target "E:\WORK\memclaw\memclaw-cross-fleet-gov\agents\sales-agent"
+
+New-Item -ItemType Junction -Path "$HOME\.openclaw\workspace-legal-agent" `
+  -Target "E:\WORK\memclaw\memclaw-cross-fleet-gov\agents\legal-agent"
+
+New-Item -ItemType Junction -Path "$HOME\.openclaw\workspace-admin-agent" `
+  -Target "E:\WORK\memclaw\memclaw-cross-fleet-gov\agents\admin-agent"
+```
+
+### 4. Start the gateway
 
 ```bash
-openclaw gateway
-openclaw chat --session governance-demo
+openclaw gateway restart
+openclaw agents list --bindings   # verify all three agents are registered
+openclaw dashboard                 # http://127.0.0.1:18789
 ```
 
-### 4. Confirm MemClaw tools are available
+### 5. Confirm MemClaw tools are loaded
 
-```text
+```
 List available tools.
 ```
 
-Expected: tools include `memclaw_recall`, `memclaw_write`, `memclaw_stats`, and other `memclaw_*` tools.
+Expected: `memclaw_recall`, `memclaw_write`, `memclaw_stats`, and other `memclaw_*` tools appear in the session.
 
 ---
 
 ## Governance Validation
 
-### A. Write legal-only memory
+Run these in sequence to verify that MemClaw's fleet isolation is working end to end. Each step demonstrates a different layer of MemClaw's governance model: scoped writes, blocked recall, permitted recall, contradiction seeding, and cross-fleet synthesis.
 
-```text
+### Step A — Write to `fleet-legal`
+
+```
 /agent legal-agent
+
 Use memclaw_write to store:
-"Governance test: Nimbus Bio is under active GDPR hold pending DPO sign-off."
-Fleet: fleet-legal
+  content: "HealthSystem Inc is under active GDPR hold pending DPO sign-off. No contracts or renewals can execute until hold is lifted."
+  memory_type: "rule"
+  fleet_id: "fleet-legal"
+  agent_id: "legal-agent"
 ```
 
-### B. Sales should not see it
+### Step B — Sales agent should not see it
 
-```text
+```
 /agent sales-agent
-Use memclaw_recall with fleet_ids ["fleet-sales","fleet-org-shared"] for "Nimbus Bio GDPR hold"
+
+Use memclaw_recall with:
+  fleet_ids: ["fleet-sales", "fleet-org-shared"]
+  query: "HealthSystem Inc GDPR hold"
+  agent_id: "sales-agent"
 ```
 
-Expected: empty or denied for legal-only memory.
+**Expected:** empty result. `fleet-legal` is not in the search space for this call.
 
-### C. Legal should see it
+### Step C — Legal agent sees it
 
-```text
+```
 /agent legal-agent
-Use memclaw_recall with fleet_ids ["fleet-legal","fleet-org-shared"] for "Nimbus Bio GDPR hold"
+
+Use memclaw_recall with:
+  fleet_ids: ["fleet-legal", "fleet-org-shared"]
+  query: "HealthSystem Inc GDPR hold"
+  agent_id: "legal-agent"
 ```
 
-Expected: memory is returned.
+**Expected:** the compliance hold memory is returned.
 
-### D. Admin conflict synthesis
+### Step D — Write a conflicting sales record
 
-```text
+```
 /agent sales-agent
+
 Use memclaw_write to store:
-"Nimbus Bio renewal is in final commercial negotiation."
-Fleet: fleet-sales
+  content: "HealthSystem Inc renewal in final commercial negotiation. Proposed $420k. Deal stage: negotiation. Expected close Q3 2026."
+  memory_type: "episode"
+  fleet_id: "fleet-sales"
+  agent_id: "sales-agent"
 ```
 
-```text
+### Step E — Admin sees both and surfaces the conflict
+
+```
 /agent admin-agent
-Use memclaw_recall with fleet_ids ["fleet-sales","fleet-legal","fleet-org-shared"] for "Nimbus Bio status"
+
+Use memclaw_recall with:
+  fleet_ids: ["fleet-sales", "fleet-legal", "fleet-org-shared"]
+  query: "HealthSystem Inc status"
+  agent_id: "admin-agent"
 ```
 
-Expected: admin sees both contexts and can report contradiction with fleet labels.
+**Expected:** admin surfaces both the active renewal negotiation from `fleet-sales` and the GDPR hold from `fleet-legal`, flags the contradiction, and identifies this as a cross-team escalation.
+
+### Step F — Run insights on the admin agent
+
+```
+/agent admin-agent
+
+Use memclaw_insights with focus: "contradictions"
+```
+
+**Expected:** MemClaw's LLM-powered reflection surfaces the HealthSystem Inc conflict with source fleet labels.
 
 ---
 
-<!-- ## Capture Demo Media Now
+## Tenant and Fleet Model
 
-This section replaces placeholder demo media. Capture these assets now and commit them under `docs/images/`.
+```
+Tenant: your-org
+├── fleet-org-shared    → company-wide context, all agents read + write
+├── fleet-sales         → commercial pipeline, sales-agent + admin-agent only
+└── fleet-legal         → compliance and risk, legal-agent + admin-agent only
+```
 
-### 1. GIF to record
+**Tenant** = organization boundary (row-level DB isolation)  
+**Fleet** = access boundary inside a tenant (query predicate enforcement)  
+**Agent trust tier** = controls cross-fleet read, write, and delete permissions
 
-Record a short terminal walkthrough (`20-40s`) showing:
+For strict isolation (advanced), provision separate tenants per domain and have the admin agent perform explicit fan-out recall with provenance merging:
 
-1. legal write (`fleet-legal`)
-2. sales recall denied/empty
-3. legal recall success
-4. admin recall showing cross-fleet context
-
-Save as:
-
-- `docs/images/governance-demo.gif`
-
-Then add to README near top:
-
-```md
-
-``` -->
-
-1. Show `List available tools` with visible `memclaw_*` tools.
-   ![Architecture Diagram](./docs/images/1_memclaw_list_available_tools.png)
-
-2. Use `memclaw_write` to write memory in sales-agent
-   ![Architecture Diagram](./docs/images/2_memclaw_write_sales_agent.png)
-
-3. use `memclaw_write` to write memory in leval-agent
-   ![Architecture Diagram](./docs/images/legal-agent-memclaw-write.png)
-
-4. Use `memclaw_write` to write memory in admin-agent
-5. ![Architecture Diagram](./docs/images/admin-agent-write.png)
+1. Recall from tenant-A / fleet-A
+2. Recall from tenant-B / fleet-B
+3. Merge with source labels
+4. Write synthesis to governance scope
 
 ---
 
 ## OpenClaw Setup
 
-This guide provides setup instructions for both new and existing OpenClaw users.
+### New users
 
-### For New OpenClaw Users (No Existing Fleet)
+```bash
+openclaw onboard --install-daemon
+openclaw auth set aisa:default --key "your-llm-api-key"
+openclaw doctor
+```
 
-If you are new to OpenClaw, you'll need to initialize your configuration first.
+### Existing users
 
-1.  **Initialize OpenClaw:**
-    This command creates the necessary configuration files in your home directory (`~/.openclaw`).
+If agent workspace paths are doubling on Windows (known path resolution issue), use the junction approach in the Quickstart above. Always use relative workspace names in `openclaw.json` for agents resolved from `.openclaw/`:
 
-    ```bash
-    openclaw init
-    ```
+```json
+{
+  "agents": {
+    "list": [
+      { "id": "sales-agent",  "workspace": "workspace-sales-agent" },
+      { "id": "legal-agent",  "workspace": "workspace-legal-agent" },
+      { "id": "admin-agent",  "workspace": "workspace-admin-agent" }
+    ]
+  }
+}
+```
 
-2.  **Create a New Fleet:**
-    A fleet is a collection of agents that work together. For this demo, you can create a new fleet with the following command.
-
-    ```bash
-    openclaw fleets create --name governance-demo-fleet --description "Fleet for MemClaw Governance Demo"
-    ```
-
-3.  **Follow the Quickstart:**
-    Once your fleet is created, you can proceed with the [Quickstart](#quickstart) section, making sure your `openclaw.json` is configured to use the agents in this repository.
-
-### For Existing OpenClaw Users
-
-If you already have an OpenClaw environment, you can integrate this project by adding the agents to your existing configuration.
-
-1.  **Ensure `openclaw.json` is Correct:**
-    Make sure the `openclaw.json` in this repository points to the correct agent directories. The paths should be relative, like `./agents/sales-agent`.
-
-2.  **Run `openclaw doctor`:**
-    To ensure all configurations are correctly loaded and there are no path issues, run the doctor command.
-
-    ```bash
-    openclaw doctor --fix
-    ```
-
-3.  **Start the Session:**
-    You can now start a chat session as described in the [Quickstart](#quickstart).
-
-### General Setup Notes
-
-- If you encounter interactive onboarding issues, running `openclaw doctor --fix` can often resolve them.
-- Always use relative paths for agent workspaces in your `openclaw.json` file (e.g., `./agents/...`).
-- Ensure your model provider is stable before enabling additional plugins.
+Run `openclaw doctor` if any agent fails to bind on gateway start.
 
 ---
 
 ## Security Notes
 
-- Never commit live API keys.
-- Rotate keys exposed in terminal logs or chat.
-- Keep `MEMCLAW_BASE_URL` on HTTPS for hosted deployments.
+- Never commit live API keys — use `.env` and add it to `.gitignore`
+- Rotate any key that appears in terminal logs or chat history
+- Keep `MEMCLAW_API_URL` on HTTPS for all hosted deployments
+- Set `MEMCLAW_AUTO_WRITE_TURNS: false` (boolean, not string) to prevent unintended auto-persistence
 
 ---
 
-## Repository Layout
+## Related
 
-```text
-.
-├── AGENTS.md
-├── README.md
-├── openclaw.json
-├── agents/
-│   ├── admin-agent/
-│   ├── legal-agent/
-│   └── sales-agent/
-├── docs/
-│   └── images/
-└── skills/
-    └── memclaw-governance.md
-```
+- [MemClaw documentation](https://memclaw.net/docs)
+- [MemClaw open source (Apache 2.0)](https://github.com/caura-ai/caura-memclaw)
+- [OpenClaw agent workspace guide](https://www.stack-junkie.com/blog/openclaw-system-prompt-design-guide)
+- [eToro case study — 20+ agents on MemClaw](https://memclaw.net/blog/etoro-company-brain/)
+
+---
+
+<p align="center">
+  <strong>Built on <a href="https://memclaw.net">MemClaw</a> — fleet memory for AI agents. Governed, shared, self-improving.</strong><br/>
+  <a href="https://github.com/caura-ai/caura-memclaw">Source (Apache 2.0)</a> ·
+  <a href="https://memclaw.net/docs">Documentation</a> ·
+  <a href="https://memclaw.net/blog/etoro-company-brain/">eToro case study</a>
+</p>
