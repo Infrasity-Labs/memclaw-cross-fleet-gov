@@ -1,0 +1,59 @@
+{
+  "gateway": {
+    "mode": "local"
+  },
+
+  "auth": {
+    "profiles": {
+      "aisa:default": {
+        "provider": "aisa",
+        "mode": "api_key"
+      }
+    }
+  },
+
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "aisa": {
+        "baseUrl": "https://api.aisa.one/v1",
+        "apiKey": "${AISA_API_KEY}",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "deepseek-v3",
+            "name": "DeepSeek V3"
+          }
+        ]
+      }
+    }
+  },
+
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "aisa/deepseek-v3",
+        "fallbacks": ["aisa/deepseek-v3"]
+      },
+
+      "models": {
+        "aisa/deepseek-v3": {}
+      }
+    },
+
+    "list": [
+      {
+        "id": "sales-agent",
+        "workspace": "../agents/sales-agent"
+      },
+      {
+        "id": "legal-agent",
+        "workspace": "../agents/legal-agent"
+      },
+      {
+        "id": "admin-agent",
+        "workspace": "../agents/admin-agent"
+      }
+    ]
+  }
+}

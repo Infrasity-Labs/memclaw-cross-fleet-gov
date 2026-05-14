@@ -4,43 +4,11 @@
   "hostContractVersion": "2026.5.7",
   "compatRegistryVersion": "f495518e4bb408b5b516ec1add5c2c1850580753e490d00c996d690c24523e34",
   "migrationVersion": 1,
-  "policyHash": "35ce787d45576fdb234282fb3fdc5008bf1b2af87ba5513dbaae226d3d51a948",
-  "generatedAtMs": 1778661173627,
+  "policyHash": "b07e14dc3e5d721b852b85c1ad429a90b6a807ceb26850002b5bed2ad8c7d1de",
+  "generatedAtMs": 1778730113726,
   "refreshReason": "migration",
   "installRecords": {},
   "plugins": [
-    {
-      "pluginId": "memclaw",
-      "manifestPath": "C:\\Users\\jyolsna maria joemon\\.openclaw\\plugins\\memclaw\\openclaw.plugin.json",
-      "manifestHash": "0cd74519a93500d54751efc01d7a4dac778b85aeff21595822cf8cca1eddf3f1",
-      "manifestFile": {
-        "size": 642,
-        "mtimeMs": 1778616372661.51,
-        "ctimeMs": 1778616372661.51
-      },
-      "source": "C:\\Users\\jyolsna maria joemon\\.openclaw\\plugins\\memclaw\\dist\\index.js",
-      "rootDir": "C:\\Users\\jyolsna maria joemon\\.openclaw\\plugins\\memclaw",
-      "origin": "config",
-      "enabled": true,
-      "startup": {
-        "sidecar": false,
-        "memory": true,
-        "deferConfiguredChannelFullLoadUntilAfterListen": false,
-        "agentHarnesses": []
-      },
-      "compat": [],
-      "packageName": "@caura/memclaw",
-      "packageVersion": "2.5.0",
-      "packageJson": {
-        "path": "package.json",
-        "hash": "96e5e8dc9676ec471c01cf3608e3830fd3c4c22e67f1bec50632762313c38bb4",
-        "fileSignature": {
-          "size": 389,
-          "mtimeMs": 1778616371696.6448,
-          "ctimeMs": 1778616371696.6448
-        }
-      }
-    },
     {
       "pluginId": "active-memory",
       "manifestPath": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\active-memory\\openclaw.plugin.json",
@@ -74,7 +42,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\alibaba\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\alibaba",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -109,7 +77,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\amazon-bedrock\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\amazon-bedrock",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -142,7 +110,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\amazon-bedrock-mantle\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\amazon-bedrock-mantle",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -175,7 +143,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\anthropic\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\anthropic",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -215,7 +183,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\anthropic-vertex\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\anthropic-vertex",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -251,7 +219,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\arcee\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\arcee",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -286,7 +254,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\azure-speech\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\azure-speech",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -356,7 +324,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\browser\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\browser",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": true,
         "memory": false,
@@ -391,7 +359,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\byteplus\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\byteplus",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -426,7 +394,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\cerebras\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\cerebras",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -461,7 +429,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\chutes\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\chutes",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -496,7 +464,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\cloudflare-ai-gateway\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\cloudflare-ai-gateway",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -531,7 +499,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\comfy\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\comfy",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -566,7 +534,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\copilot-proxy\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\copilot-proxy",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -599,7 +567,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\deepgram\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\deepgram",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -634,7 +602,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\deepinfra\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\deepinfra",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -667,7 +635,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\deepseek\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\deepseek",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -702,7 +670,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\device-pair\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\device-pair",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": true,
         "memory": false,
@@ -724,7 +692,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\document-extract\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\document-extract",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -789,7 +757,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\elevenlabs\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\elevenlabs",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -858,7 +826,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\fal\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\fal",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -893,7 +861,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\file-transfer\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\file-transfer",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": true,
         "memory": false,
@@ -960,7 +928,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\fireworks\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\fireworks",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -995,7 +963,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\github-copilot\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\github-copilot",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1030,7 +998,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\google\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\google",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1101,7 +1069,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\groq\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\groq",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1134,7 +1102,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\huggingface\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\huggingface",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1229,7 +1197,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\inworld\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\inworld",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1325,7 +1293,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\kilocode\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\kilocode",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1360,7 +1328,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\kimi-coding\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\kimi-coding",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1395,7 +1363,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\litellm\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\litellm",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1462,7 +1430,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\lmstudio\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\lmstudio",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1624,7 +1592,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\memory-core\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\memory-core",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": true,
@@ -1688,7 +1656,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\microsoft\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\microsoft",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1721,7 +1689,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\microsoft-foundry\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\microsoft-foundry",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1820,7 +1788,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\minimax\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\minimax",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1855,7 +1823,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\mistral\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\mistral",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1890,7 +1858,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\moonshot\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\moonshot",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1925,7 +1893,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\nvidia\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\nvidia",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -1960,7 +1928,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\ollama\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\ollama",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2030,7 +1998,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\openai\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\openai",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2067,7 +2035,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\opencode\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\opencode",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2102,7 +2070,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\opencode-go\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\opencode-go",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2137,7 +2105,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\openrouter\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\openrouter",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2238,7 +2206,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\phone-control\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\phone-control",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": true,
         "memory": false,
@@ -2260,7 +2228,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\qianfan\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\qianfan",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2293,7 +2261,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\qwen\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\qwen",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2328,7 +2296,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\runway\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\runway",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2395,7 +2363,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\senseaudio\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\senseaudio",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2430,7 +2398,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\sglang\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\sglang",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2616,7 +2584,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\stepfun\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\stepfun",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2649,7 +2617,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\synthetic\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\synthetic",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2684,7 +2652,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\talk-voice\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\talk-voice",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": true,
         "memory": false,
@@ -2804,7 +2772,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\tencent\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\tencent",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2860,7 +2828,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\together\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\together",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2927,7 +2895,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\tts-local-cli\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\tts-local-cli",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2960,7 +2928,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\venice\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\venice",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -2993,7 +2961,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\vercel-ai-gateway\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\vercel-ai-gateway",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -3028,7 +2996,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\vllm\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\vllm",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -3063,7 +3031,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\volcengine\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\volcengine",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -3098,7 +3066,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\voyage\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\voyage",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -3133,7 +3101,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\vydra\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\vydra",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -3168,7 +3136,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\web-readability\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\web-readability",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -3233,7 +3201,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\xai\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\xai",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -3271,7 +3239,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\xiaomi\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\xiaomi",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,
@@ -3306,7 +3274,7 @@
       "source": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\zai\\index.js",
       "rootDir": "C:\\Users\\jyolsna maria joemon\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\zai",
       "origin": "bundled",
-      "enabled": false,
+      "enabled": true,
       "startup": {
         "sidecar": false,
         "memory": false,

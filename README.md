@@ -39,7 +39,7 @@
 
 ## What is MemClaw
 
-[MemClaw](https://memclaw.net) is open-source fleet memory for AI agents — governed, shared, and self-improving. Agents write plain text. MemClaw turns it into searchable, governed, structured memory with automatic enrichment, lifecycle management, and cross-agent knowledge sharing.
+[MemClaw](https://memclaw.net) is open-source fleet memory for AI agents- governed, shared, and self-improving. Agents write plain text. MemClaw turns it into searchable, governed, structured memory with automatic enrichment, lifecycle management, and cross-agent knowledge sharing.
 
 **The core loop: write → recall → compound.** Every interaction makes the next one smarter.
 
@@ -47,15 +47,15 @@ What makes MemClaw different from a vector database:
 
 | Capability | What it means |
 |---|---|
-| **Fleet isolation** | Memory partitioned by `fleet_id`. Boundaries are query predicates at the storage layer — not prompt instructions |
-| **LLM enrichment on write** | Every `memclaw_write` auto-classifies type, generates title/summary/tags, scans PII, extracts entities, detects contradictions — from a single `content` field |
+| **Fleet isolation** | Memory partitioned by `fleet_id`. Boundaries are query predicates at the storage layer not prompt instructions |
+| **LLM enrichment on write** | Every `memclaw_write` auto-classifies type, generates title/summary/tags, scans PII, extracts entities, detects contradictions from a single `content` field |
 | **Hybrid recall** | `memclaw_recall` combines vector similarity, keyword search, and knowledge graph traversal in one call |
 | **8-status lifecycle** | Memories move through `active → confirmed → outdated → superseded → archived` automatically |
 | **Crystallizer** | LLM batch process that merges near-duplicate memories into canonical atomic facts with full provenance |
-| **Audit trail** | Every read and write logged — "which agent recalled this memory and when" is always answerable |
+| **Audit trail** | Every read and write logged "which agent recalled this memory and when" is always answerable |
 | **Karpathy Loop** | Agents report outcomes via `memclaw_evolve`; the system reinforces what works and generates preventive rules on failure |
 
-This repo is a **use-case implementation** — three OpenClaw agents (Sales, Legal, Admin) operating against a single MemClaw tenant with three fleet partitions, showing what MemClaw's governance layer looks like in a real multi-agent deployment.
+This repo is a **use-case implementation**, three OpenClaw agents (Sales, Legal, Admin) operating against a single MemClaw tenant with three fleet partitions, showing what MemClaw's governance layer looks like in a real multi-agent deployment.
 
 <p align="center">
   <a href="https://github.com/caura-ai/caura-memclaw"><strong>→ MemClaw source (Apache 2.0)</strong></a> ·
@@ -67,7 +67,8 @@ This repo is a **use-case implementation** — three OpenClaw agents (Sales, Leg
 
 ## The Problem
 
-In enterprise multi-agent deployments, agents typically share a flat memory pool. This creates a hard choice:
+<b>Why not just use a single-agent memory system?</b> In an enterprise, you cannot dump all AI memory into one flat database. Legal handles sensitive compliance data that Sales shouldn't see, but both need to share general account context. Single-agent setups force you to choose between completely siloed amnesia or a massive security nightmare.
+
 
 | Approach | Problem |
 |---|---|
@@ -75,7 +76,7 @@ In enterprise multi-agent deployments, agents typically share a flat memory pool
 | Open shared memory | Sales reads Legal holds. Legal reads negotiation ceilings. Data leaks. |
 | Prompt-level separation | "Don't mention compliance data" — the data still passes through recall. LLMs can still surface it. |
 
-**MemClaw resolves this at the retrieval layer.** Fleet boundaries are enforced as query predicates before the hybrid search runs. An agent cannot surface what it was never given. No prompt engineering required — the guarantee is structural.
+**MemClaw resolves this at the retrieval layer.** Fleet boundaries are enforced as query predicates before the hybrid search runs. An agent cannot surface what it was never given. No prompt engineering required, the guarantee is structural.
 
 ---
 
@@ -110,61 +111,6 @@ This is not a prompt rule. It is a database predicate inside MemClaw's storage l
   <img src="./docs/images/memclaw flow.png" alt="Architecture Diagram" width="85%" />
 </p>
 
-```
-                        User
-                          │
-                          ▼
-          ┌────────────────────────────────────┐
-          │          OpenClaw Gateway           │
-          │  Session mgmt · agent dispatch      │
-          │  MCP routing · context assembly     │
-          └────────────────────────────────────┘
-               │               │               │
-               ▼               ▼               ▼
-     ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-     │ sales-agent  │  │ legal-agent  │  │ admin-agent  │
-     │              │  │              │  │              │
-     │ SOUL.md      │  │ SOUL.md      │  │ SOUL.md      │
-     │ AGENTS.md    │  │ AGENTS.md    │  │ AGENTS.md    │
-     │ governance ↓ │  │ governance ↓ │  │ governance ↓ │
-     └──────┬───────┘  └──────┬───────┘  └──────┬───────┘
-            │                 │                  │
-            └─────────────────┼──────────────────┘
-                              │  tool calls
-                              ▼
-           ┌──────────────────────────────────┐
-           │        MemClaw MCP Server         │
-           │  memclaw_recall · memclaw_write   │
-           │  memclaw_manage · memclaw_insights│
-           └──────────────────────────────────┘
-                              │
-             ◄─ fleet_ids enforcement boundary ─►
-                              │
-         ┌────────────────────┼────────────────────┐
-         ▼                    ▼                     ▼
-  ┌─────────────┐    ┌──────────────┐    ┌──────────────┐
-  │fleet-org-   │    │ fleet-sales  │    │ fleet-legal  │
-  │shared       │    │              │    │              │
-  │All agents   │    │Sales + Admin │    │Legal + Admin │
-  └─────────────┘    └──────────────┘    └──────────────┘
-         │                    │                     │
-         └────────────────────┼─────────────────────┘
-                              │
-                              ▼
-         ┌────────────────────────────────────────┐
-         │           pgvector memory store         │
-         │  Row-level isolation · hybrid search    │
-         │  8-status lifecycle · audit trail       │
-         │  Knowledge graph · crystallizer         │
-         └────────────────────────────────────────┘
-                              │
-                              │  LLM enrichment on every write
-                              ▼
-         ┌────────────────────────────────────────┐
-         │              LLM Gateway               │
-         │  Inference · enrichment · extraction   │
-         └────────────────────────────────────────┘
-```
 
 ---
 
@@ -491,7 +437,7 @@ Run `openclaw doctor` if any agent fails to bind on gateway start.
 ---
 
 <p align="center">
-  <strong>Built on <a href="https://memclaw.net">MemClaw</a> — fleet memory for AI agents. Governed, shared, self-improving.</strong><br/>
+  <strong>Built on <a href="https://memclaw.net">MemClaw</a>: fleet memory for AI agents. Governed, shared, self-improving.</strong><br/>
   <a href="https://github.com/caura-ai/caura-memclaw">Source (Apache 2.0)</a> ·
   <a href="https://memclaw.net/docs">Documentation</a> ·
   <a href="https://memclaw.net/blog/etoro-company-brain/">eToro case study</a>
