@@ -48,7 +48,9 @@ In this repo, OpenClaw is doing three things:
 - **Context injection:** loads each agent's `SOUL.md` and `AGENTS.md` before the first message
 - **Plugin wiring:** registers the MemClaw MCP server so agents can call `memclaw_*` tools natively as tool calls
 
-Install it with: `npm install -g openclaw@latest`
+```bash
+npm install -g openclaw@latest
+```
 
 ---
 
