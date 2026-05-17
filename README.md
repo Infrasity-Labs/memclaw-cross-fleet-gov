@@ -91,8 +91,6 @@ npm install -g openclaw@latest
   <video src="./docs/images/memclaw demo.mp4" controls width="100%"></video>
 </p>
 
-> Can't play the video? [Download it here](./docs/images/memclaw%20demo.mp4)
-
 ### 1. Sales agent writes to `fleet-sales`
 
 ![Sales agent write](./docs/images/2_memclaw_write_sales_agent.png)
@@ -104,6 +102,7 @@ npm install -g openclaw@latest
 ### 3. Admin agent recalls cross-fleet and sees the conflict
 
 ![Admin agent cross-fleet recall](./docs/images/admin-agent-write.png)
+![Admin agent cross-fleet recall](./docs/images/memclaw%20recall.png)
 
 > **The conflict:** `fleet-sales` shows the Acme Corp renewal in active negotiation. `fleet-legal` shows the MSA auto-renewal clause requiring legal review before any amendments. Only the admin agent sees both — because only it declares all three fleets in its `memclaw_recall` call.
 
