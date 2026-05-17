@@ -21,6 +21,9 @@
 </p>
 
 <p align="center">
+  <a href="#what-is-memclaw">MemClaw</a> ·
+  <a href="#what-is-openclaw">OpenClaw</a> ·
+  <a href="#demo">Demo</a> ·
   <a href="#the-problem">The Problem</a> ·
   <a href="#how-it-works">How It Works</a> ·
   <a href="#architecture">Architecture</a> ·
@@ -35,22 +38,6 @@
 
 > _Three agents. One memory backend. Zero cross-scope leakage._  
 > Sales sees pipeline. Legal sees compliance. Admin sees everything and surfaces the conflicts.
-
----
-
-## What is OpenClaw
-
-[OpenClaw](https://www.stack-junkie.com/blog/openclaw-system-prompt-design-guide) is an open-source agent orchestration gateway. It runs locally as a daemon, registers named agents from workspace directories, and exposes them through a unified chat interface and API. Each agent has its own workspace (a directory containing identity files: `SOUL.md`, `AGENTS.md`, `IDENTITY.md`) that are injected as system context at session start, along with its own plugin bindings (MCP servers, memory backends, tools).
-
-In this repo, OpenClaw is doing three things:
-
-- **Routing:** `/agent sales-agent` targets a specific registered agent
-- **Context injection:** loads each agent's `SOUL.md` and `AGENTS.md` before the first message
-- **Plugin wiring:** registers the MemClaw MCP server so agents can call `memclaw_*` tools natively as tool calls
-
-```bash
-npm install -g openclaw@latest
-```
 
 ---
 
@@ -79,6 +66,46 @@ This repo is a **use-case implementation**: three OpenClaw agents (Sales, Legal,
   <a href="https://memclaw.net/docs"><strong>→ Documentation</strong></a> ·
   <a href="https://memclaw.net"><strong>→ Get an API key</strong></a>
 </p>
+
+---
+
+## What is OpenClaw
+
+[OpenClaw](https://www.stack-junkie.com/blog/openclaw-system-prompt-design-guide) is an open-source agent orchestration gateway. It runs locally as a daemon, registers named agents from workspace directories, and exposes them through a unified chat interface and API. Each agent has its own workspace (a directory containing identity files: `SOUL.md`, `AGENTS.md`, `IDENTITY.md`) that are injected as system context at session start, along with its own plugin bindings (MCP servers, memory backends, tools).
+
+In this repo, OpenClaw is doing three things:
+
+- **Routing:** `/agent sales-agent` targets a specific registered agent
+- **Context injection:** loads each agent's `SOUL.md` and `AGENTS.md` before the first message
+- **Plugin wiring:** registers the MemClaw MCP server so agents can call `memclaw_*` tools natively as tool calls
+
+```bash
+npm install -g openclaw@latest
+```
+
+---
+
+## Demo
+
+<p align="center">
+  <video src="./docs/images/memclaw demo.mp4" controls width="100%"></video>
+</p>
+
+> Can't play the video? [Download it here](./docs/images/memclaw%20demo.mp4)
+
+### 1. Sales agent writes to `fleet-sales`
+
+![Sales agent write](./docs/images/2_memclaw_write_sales_agent.png)
+
+### 2. Legal agent writes to `fleet-legal`
+
+![Legal agent write](./docs/images/legal-agent-memclaw-write.png)
+
+### 3. Admin agent recalls cross-fleet and sees the conflict
+
+![Admin agent cross-fleet recall](./docs/images/admin-agent-write.png)
+
+> **The conflict:** `fleet-sales` shows the Acme Corp renewal in active negotiation. `fleet-legal` shows the MSA auto-renewal clause requiring legal review before any amendments. Only the admin agent sees both — because only it declares all three fleets in its `memclaw_recall` call.
 
 ---
 
@@ -126,28 +153,6 @@ This is not a prompt rule. It is a database predicate inside MemClaw's storage l
 <p align="center">
   <img src="./docs/images/memclaw flow.png" alt="Architecture Diagram" width="85%" />
 </p>
-
----
-
-## Demo
-
-### 1. MemClaw tools available in session
-
-![List available tools](./docs/images/1_memclaw_list_available_tools.png)
-
-### 2. Sales agent writes to `fleet-sales`
-
-![Sales agent write](./docs/images/2_memclaw_write_sales_agent.png)
-
-### 3. Legal agent writes to `fleet-legal`
-
-![Legal agent write](./docs/images/legal-agent-memclaw-write.png)
-
-### 4. Admin agent recalls cross-fleet and sees the conflict
-
-![Admin agent cross-fleet recall](./docs/images/admin-agent-write.png)
-
-> **The conflict:** `fleet-sales` shows HealthSystem Inc renewal in active negotiation at $420k. `fleet-legal` shows a GDPR hold blocking any contract renewal. Only the admin agent sees both, because only it declares both fleets in its `memclaw_recall` call. MemClaw's `memclaw_insights` with `focus: "contradictions"` surfaces this automatically as a detected conflict with source fleet labels attached.
 
 ---
 

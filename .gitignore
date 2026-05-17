@@ -9,3 +9,5 @@ build/
 .venv/
 venv/
 **/openclaw.json
+workspace-*/
+workspace/
