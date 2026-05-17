@@ -104,7 +104,7 @@ Lives at `.openclaw/plugins/memclaw/`. Key source files:
 
 ### MCP Tools Exposed
 
-`memclaw_write`, `memclaw_recall`, `memclaw_manage`, `memclaw_list`, `memclaw_insights`, `memclaw_stats`, `memclaw_evolve`, `memclaw_keystones`, `memclaw_tune`, `memclaw_entity_get`
+`memclaw_write`, `memclaw_recall`, `memclaw_manage`, `memclaw_list`, `memclaw_insights`, `memclaw_stats`, `memclaw_evolve`, `memclaw_tune`, `memclaw_entity_get`, `memclaw_doc`
 
 Always pass `agent_id: "<this-agent-id>"` explicitly on every tool call. If omitted, the plugin falls back to an install-scoped default that may not isolate memories correctly.
 

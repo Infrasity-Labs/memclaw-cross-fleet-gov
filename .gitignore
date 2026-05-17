@@ -1,6 +1,10 @@
 # Environment
 .env
 
+# OpenClaw plugin vendored deps — source is kept, node_modules is not
+.openclaw/plugins/**/node_modules/
+.openclaw/plugins/**/dist/
+
 # OpenClaw runtime — never commit these
 .openclaw/agents/
 .openclaw/canvas/

@@ -217,7 +217,7 @@ For production deployments where legal/sales data separation must be auditable, 
 
 ## MemClaw MCP Tools
 
-MemClaw exposes its full capability surface through 12 MCP tools. OpenClaw registers these at gateway start and agents call them as standard tool calls.
+MemClaw exposes its full capability surface through 10 MCP tools. OpenClaw registers these at gateway start and agents call them as standard tool calls.
 
 | Tool                 | What it does                                                                                           |
 | -------------------- | ------------------------------------------------------------------------------------------------------ |
@@ -228,7 +228,6 @@ MemClaw exposes its full capability surface through 12 MCP tools. OpenClaw regis
 | `memclaw_insights`   | LLM-powered reflection with six focus modes: `contradictions`, `failures`, `stale`, `divergence`, `patterns`, `discover` |
 | `memclaw_stats`      | Aggregate counts by type, agent, status                                                                |
 | `memclaw_evolve`     | Report outcomes against recalled memories and close the learning loop                                  |
-| `memclaw_keystones`  | Load mandatory governance rules for the current fleet scope                                            |
 | `memclaw_tune`       | Adjust recall weighting and enrichment parameters                                                      |
 | `memclaw_entity_get` | Fetch a specific entity record from the knowledge graph                                                |
 | `memclaw_doc`        | Return tool schema documentation                                                                       |
@@ -617,7 +616,7 @@ openclaw doctor
 
 ### Existing users
 
-If agent workspace paths are doubling on Windows (known path resolution issue), use the junction approach in the Quickstart above. Always use relative workspace names in `openclaw.json` for agents resolved from `.openclaw/`:
+If agent workspace paths are doubling on Windows (known path resolution issue), use the junction approach in the Quickstart above. `openclaw agents add` takes an absolute path to register the workspace, but `openclaw.json` stores only the directory name relative to `~/.openclaw/`. The two are consistent — `workspace-sales-agent` in `openclaw.json` resolves to `~/.openclaw/workspace-sales-agent`:
 
 ```json
 {
