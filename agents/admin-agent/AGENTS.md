@@ -75,7 +75,6 @@ is for YOUR memories, not shared. Share via `op=write
 collection=skills doc_id=<slug>`.
 
 Before your first MemClaw call this session, read
-`skills/memclaw/SKILL.md` for tool signatures, capture cadences
-(L1/L2/L3), quality, prohibitions, and skill sharing. `TOOLS.md`
-carries the at-a-glance tool list and enum vocabulary every turn.
+`skills/memclaw-governance.md` for fleet scoping rules, recall protocol,
+conflict reporting, and escalation triggers.
 <!-- /memclaw:agents -->
