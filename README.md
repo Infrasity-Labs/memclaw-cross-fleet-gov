@@ -87,9 +87,7 @@ npm install -g openclaw@latest
 
 ## Demo
 
-<p align="center">
-  <video src="./docs/images/memclaw demo.mp4" controls width="100%"></video>
-</p>
+![memclaw demo gif](./docs/images/memclaw%20demo.gif)
 
 ### 1. Sales agent writes to `fleet-sales`
 
@@ -99,7 +97,7 @@ npm install -g openclaw@latest
 
 ![Legal agent write](./docs/images/legal-agent-memclaw-write.png)
 
-### 3. Admin agent recalls cross-fleet and sees the conflict
+### 3. Admin agent recalls cross-fleet 
 
 ![Admin agent cross-fleet recall](./docs/images/admin-agent-write.png)
 ![Admin agent cross-fleet recall](./docs/images/memclaw%20recall.png)
