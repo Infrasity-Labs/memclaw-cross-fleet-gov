@@ -199,9 +199,52 @@ For production deployments where legal/sales data separation must be auditable, 
 
 ## Architecture
 
-<p align="center">
-  <img src="./docs/images/memclaw-flow.png" alt="Architecture Diagram" width="85%" />
-</p>
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  OpenClaw Gateway                                                   │
+│                                                                     │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐  │
+│  │ sales-agent  │  │ legal-agent  │  │      admin-agent         │  │
+│  │              │  │              │  │                          │  │
+│  │ fleet_ids:   │  │ fleet_ids:   │  │ fleet_ids:               │  │
+│  │ • fleet-sales│  │ • fleet-legal│  │ • fleet-sales            │  │
+│  │ • fleet-org  │  │ • fleet-org  │  │ • fleet-legal            │  │
+│  │   -shared    │  │   -shared    │  │ • fleet-org-shared       │  │
+│  └──────┬───────┘  └──────┬───────┘  └────────────┬─────────────┘  │
+│         │                 │                        │                │
+│         └─────────────────┴────────────────────────┘                │
+│                           │  memclaw_* MCP tools                   │
+└───────────────────────────┼─────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│  MemClaw  (local Docker / memclaw.net)                              │
+│                                                                     │
+│  Isolation layer 1 — Tenant boundary (strongest)                   │
+│  └─ Full DB-level partition. Managed service only (or separate      │
+│     OSS instances). Cannot be crossed by any query.                 │
+│                                                                     │
+│  Isolation layer 2 — scope_agent  (per-row ACL)                    │
+│  └─ Server-side ACL on each memory row. Only the writing agent      │
+│     can recall it, regardless of fleet_ids.                         │
+│                                                                     │
+│  Isolation layer 3 — fleet_ids filter  (query predicate)           │
+│  └─ WHERE fleet_id IN (...) runs before vector + keyword search.    │
+│     Records outside declared fleets are never loaded or scored.     │
+│     Boundary strength depends on agents declaring fleet_ids         │
+│     honestly per their AGENTS.md contract.                          │
+│                                                                     │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌──────────────────┐   │
+│  │  fleet-sales    │  │  fleet-legal    │  │ fleet-org-shared │   │
+│  │                 │  │                 │  │                  │   │
+│  │ pipeline        │  │ GDPR hold       │  │ account context  │   │
+│  │ deal stages     │  │ compliance      │  │ shared rules     │   │
+│  │ renewals        │  │ risk flags      │  │                  │   │
+│  └─────────────────┘  └─────────────────┘  └──────────────────┘   │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+> The image at [`docs/images/memclaw-flow.png`](./docs/images/memclaw-flow.png) is an earlier placeholder. The diagram above reflects the current architecture.
 
 ---
 
@@ -287,11 +330,18 @@ MemClaw exposes its full capability surface through 10 MCP tools. OpenClaw regis
 - [Node.js 24+](https://nodejs.org/)
 - OpenClaw CLI: `npm install -g openclaw@latest`
 - [Docker](https://www.docker.com/) (to run MemClaw locally — the default path)
-- An LLM gateway API key (DeepSeek V3 or any OpenAI-compatible model)
+- An LLM API key — **or** a local model via Ollama (no key required, see below)
 
 This repo runs against a **local MemClaw instance** by default — no account, no API key, no cloud dependency. You spin up MemClaw with a single Docker command and the three fleet partitions are created automatically on first write.
 
-> **Want managed instead?** [memclaw.net](https://memclaw.net) offers a hosted MemClaw service (free tier available) with a dashboard, provisioned fleets, and no Docker required. Create an account, get your API key, and set `MEMCLAW_API_URL=https://memclaw.net/api/v1` plus `MEMCLAW_API_KEY=mc_...` in your `.env`. Everything else in this guide stays the same. The managed service also provides full tenant isolation at the database level — a stronger guarantee than the query-predicate isolation available in the OSS version.
+**Two LLM options:**
+
+| Option | Requires | Notes |
+| ------ | -------- | ----- |
+| **AISA / DeepSeek V3** (default) | `AISA_API_KEY` from [aisa.one](https://api.aisa.one) | OpenAI-compatible gateway; fastest setup |
+| **Ollama** (fully local, no key) | [Ollama](https://ollama.com) installed + a pulled model | Free, private, no rate limits |
+
+> **Want managed MemClaw instead of Docker?** [memclaw.net](https://memclaw.net) offers a hosted service (free tier available) with a dashboard and provisioned fleets. Set `MEMCLAW_API_URL=https://memclaw.net/api/v1` and `MEMCLAW_API_KEY=mc_...` in your `.env` — everything else stays the same. The managed service also provides full tenant isolation at the database level.
 
 ---
 
@@ -318,7 +368,9 @@ MemClaw is now running at `http://localhost:8000`. No API key required. Fleet pa
 cp .env.example .env
 ```
 
-The defaults in `.env.example` already point to your local instance — just fill in your LLM gateway key:
+The defaults in `.env.example` already point to your local MemClaw instance. Fill in your LLM provider:
+
+**Option A — AISA / DeepSeek V3 (default)**
 
 ```env
 # ── MemClaw (local) ──────────────────────────────────────────────────────────
@@ -328,10 +380,35 @@ MEMCLAW_TENANT_ID=default
 MEMCLAW_AUTO_WRITE_TURNS=false
 
 # ── LLM Provider ─────────────────────────────────────────────────────────────
-AISA_API_KEY=sk-...                     # your LLM gateway API key
+AISA_API_KEY=sk-...                     # your AISA gateway API key
 AISA_MODEL=deepseek-v3
 AISA_BASE_URL=https://api.aisa.one/v1
 ```
+
+**Option B — Ollama (fully local, no API key)**
+
+First pull a model:
+
+```bash
+ollama pull qwen2.5:14b   # or llama3.1:8b, mistral, etc.
+```
+
+Then set your `.env`:
+
+```env
+# ── MemClaw (local) ──────────────────────────────────────────────────────────
+MEMCLAW_API_URL=http://localhost:8000
+MEMCLAW_API_KEY=
+MEMCLAW_TENANT_ID=default
+MEMCLAW_AUTO_WRITE_TURNS=false
+
+# ── LLM Provider (Ollama) ────────────────────────────────────────────────────
+AISA_API_KEY=ollama                     # any non-empty string
+AISA_MODEL=qwen2.5:14b                  # must match your pulled model name
+AISA_BASE_URL=http://localhost:11434/v1
+```
+
+Ollama's OpenAI-compatible endpoint (`/v1`) works with OpenClaw's `--custom-base-url` flag out of the box.
 
 ### 4. Deploy agent workspaces
 
@@ -607,10 +684,17 @@ Expected: only memories in `fleet-engineering` and `fleet-org-shared` are return
 
 ```bash
 openclaw onboard --install-daemon
-# For AISA-compatible / OpenAI-compatible endpoints:
+
+# AISA / DeepSeek V3:
 openclaw onboard --non-interactive --accept-risk \
-  --custom-api-key "your-api-key" \
+  --custom-api-key "your-aisa-key" \
   --custom-base-url "https://api.aisa.one/v1"
+
+# Ollama (fully local, no key):
+openclaw onboard --non-interactive --accept-risk \
+  --custom-api-key "ollama" \
+  --custom-base-url "http://localhost:11434/v1"
+
 openclaw doctor
 ```
 
