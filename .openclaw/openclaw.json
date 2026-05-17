@@ -1,0 +1,242 @@
+{
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": ""
+    }
+  },
+  "auth": {
+    "profiles": {
+      "aisa:default": {
+        "provider": "aisa",
+        "mode": "api_key"
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "aisa": {
+        "baseUrl": "${AISA_BASE_URL}",
+        "apiKey": "${AISA_API_KEY}",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "deepseek-v3",
+            "name": "DeepSeek V3"
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "aisa/deepseek-v3",
+        "fallbacks": [
+          "aisa/deepseek-v3"
+        ]
+      },
+      "models": {
+        "aisa/deepseek-v3": {}
+      }
+    },
+    "list": [
+      {
+        "id": "sales-agent",
+        "workspace": "workspace-sales-agent"
+      },
+      {
+        "id": "legal-agent",
+        "workspace": "workspace-legal-agent"
+      },
+      {
+        "id": "admin-agent",
+        "workspace": "workspace-admin-agent"
+      }
+    ]
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.5.7",
+    "lastTouchedAt": "2026-05-14T03:43:07.248Z"
+  },
+  "skills": {
+    "entries": {
+      "1password": {
+        "enabled": false
+      },
+      "apple-notes": {
+        "enabled": false
+      },
+      "apple-reminders": {
+        "enabled": false
+      },
+      "bear-notes": {
+        "enabled": false
+      },
+      "blogwatcher": {
+        "enabled": false
+      },
+      "blucli": {
+        "enabled": false
+      },
+      "bluebubbles": {
+        "enabled": false
+      },
+      "camsnap": {
+        "enabled": false
+      },
+      "clawhub": {
+        "enabled": false
+      },
+      "coding-agent": {
+        "enabled": false
+      },
+      "discord": {
+        "enabled": false
+      },
+      "eightctl": {
+        "enabled": false
+      },
+      "gemini": {
+        "enabled": false
+      },
+      "gh-issues": {
+        "enabled": false
+      },
+      "gifgrep": {
+        "enabled": false
+      },
+      "github": {
+        "enabled": false
+      },
+      "gog": {
+        "enabled": false
+      },
+      "goplaces": {
+        "enabled": false
+      },
+      "himalaya": {
+        "enabled": false
+      },
+      "imsg": {
+        "enabled": false
+      },
+      "mcporter": {
+        "enabled": false
+      },
+      "model-usage": {
+        "enabled": false
+      },
+      "nano-pdf": {
+        "enabled": false
+      },
+      "notion": {
+        "enabled": false
+      },
+      "obsidian": {
+        "enabled": false
+      },
+      "openai-whisper": {
+        "enabled": false
+      },
+      "openai-whisper-api": {
+        "enabled": false
+      },
+      "openhue": {
+        "enabled": false
+      },
+      "oracle": {
+        "enabled": false
+      },
+      "ordercli": {
+        "enabled": false
+      },
+      "peekaboo": {
+        "enabled": false
+      },
+      "sag": {
+        "enabled": false
+      },
+      "session-logs": {
+        "enabled": false
+      },
+      "sherpa-onnx-tts": {
+        "enabled": false
+      },
+      "slack": {
+        "enabled": false
+      },
+      "songsee": {
+        "enabled": false
+      },
+      "sonoscli": {
+        "enabled": false
+      },
+      "spotify-player": {
+        "enabled": false
+      },
+      "summarize": {
+        "enabled": false
+      },
+      "things-mac": {
+        "enabled": false
+      },
+      "tmux": {
+        "enabled": false
+      },
+      "trello": {
+        "enabled": false
+      },
+      "video-frames": {
+        "enabled": false
+      },
+      "voice-call": {
+        "enabled": false
+      },
+      "wacli": {
+        "enabled": false
+      },
+      "xurl": {
+        "enabled": false
+      }
+    }
+  },
+  "wizard": {
+    "lastRunAt": "2026-05-14T03:43:06.769Z",
+    "lastRunVersion": "2026.5.7",
+    "lastRunCommand": "doctor",
+    "lastRunMode": "local"
+  },
+  "plugins": {
+  "entries": {
+    "memclaw": {
+      "enabled": true,
+      "config": {
+        "MEMCLAW_API_KEY": "${MEMCLAW_API_KEY}",
+        "MEMCLAW_API_URL": "${MEMCLAW_API_URL}",
+        "MEMCLAW_TENANT_ID": "${MEMCLAW_TENANT_ID}",
+        "MEMCLAW_FLEET_ID": "fleet-org-shared",
+        "MEMCLAW_AUTO_WRITE_TURNS": false
+      }
+    }
+  },
+
+  "allow": [
+    "memclaw"
+  ],
+
+  "slots": {
+    "memory": "memclaw",
+    "contextEngine": "memclaw"
+  },
+
+  "load": {
+    "paths": [
+      "./plugins/memclaw"
+    ]
+  }
+}
+}
+
