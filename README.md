@@ -10,7 +10,6 @@
   with query-time fleet filtering, per-row agent ACLs, and cross-fleet synthesis.
 </p>
 
-> **Security notice:** If you forked or cloned this repo before May 2026, check your copy for committed API keys (`sk-...` in `.openclaw/`) and rotate them immediately. See [Security Notes](#security-notes) below.
 
 <p align="center">
   <a href="https://memclaw.net/docs"><img src="https://img.shields.io/badge/docs-memclaw.net-2A9D8F?style=flat-square" /></a>
@@ -66,15 +65,15 @@ npm install -g openclaw@latest
 
 What makes MemClaw different from a vector database:
 
-| Capability | What it means |
+| Capability                  | What it means                                                                                                                                                                                                |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Fleet isolation** | Memory partitioned by `fleet_id`. Every recall passes a `WHERE fleet_id IN (...)` predicate before the search runs. Boundaries are a query-layer contract, not prompt instructions. |
-| **LLM enrichment on write** | Every `memclaw_write` auto-classifies type, generates title/summary/tags, scans PII, extracts entities, detects contradictions from a single `content` field |
-| **Hybrid recall** | `memclaw_recall` combines vector similarity, keyword search, and knowledge graph traversal in one call |
-| **8-status lifecycle** | Memories move through `active`, `pending`, `confirmed`, `outdated`, `conflicted`, `archived`, `deleted` statuses automatically; supersession is tracked via `supersedes_id` FK (`memclaw_manage op=lineage`) |
-| **Crystallizer** | LLM batch process that merges near-duplicate memories into canonical atomic facts with full provenance |
-| **Audit trail** | Every read and write logged. "Which agent recalled this memory and when" is always answerable |
-| **Karpathy Loop** | Agents report outcomes via `memclaw_evolve`; the system reinforces what works and generates preventive rules on failure |
+| **Fleet isolation**         | Memory partitioned by `fleet_id`. Every recall passes a `WHERE fleet_id IN (...)` predicate before the search runs. Boundaries are a query-layer contract, not prompt instructions.                          |
+| **LLM enrichment on write** | Every `memclaw_write` auto-classifies type, generates title/summary/tags, scans PII, extracts entities, detects contradictions from a single `content` field                                                 |
+| **Hybrid recall**           | `memclaw_recall` combines vector similarity, keyword search, and knowledge graph traversal in one call                                                                                                       |
+| **8-status lifecycle**      | Memories move through `active`, `pending`, `confirmed`, `outdated`, `conflicted`, `archived`, `deleted` statuses automatically; supersession is tracked via `supersedes_id` FK (`memclaw_manage op=lineage`) |
+| **Crystallizer**            | LLM batch process that merges near-duplicate memories into canonical atomic facts with full provenance                                                                                                       |
+| **Audit trail**             | Every read and write logged. "Which agent recalled this memory and when" is always answerable                                                                                                                |
+| **Karpathy Loop**           | Agents report outcomes via `memclaw_evolve`; the system reinforces what works and generates preventive rules on failure                                                                                      |
 
 This repo is a **use-case implementation**: three OpenClaw agents (Sales, Legal, Admin) operating against a single MemClaw tenant with three fleet partitions, showing what MemClaw's governance layer looks like in a real multi-agent deployment.
 
@@ -90,7 +89,7 @@ This repo is a **use-case implementation**: three OpenClaw agents (Sales, Legal,
 
 ## Demo
 
-![memclaw demo gif](./docs/images/memclaw%20demo.gif)
+![memclaw demo gif](./docs/images/memclaw-demo.gif)
 
 ### 1. Sales agent writes to `fleet-sales`
 
@@ -112,10 +111,10 @@ This repo is a **use-case implementation**: three OpenClaw agents (Sales, Legal,
 
 **Why not just use a single-agent memory system?** In an enterprise, you cannot dump all AI memory into one flat database. Legal handles sensitive compliance data that Sales should not see, but both need to share general account context. Single-agent setups force you to choose between completely siloed amnesia or a massive security nightmare.
 
-| Approach | Problem |
-| ----------------------- | -------------------------------------------------------------------------------------------------- |
-| Total memory siloing | Agents repeat work, miss shared context, have amnesia |
-| Open shared memory | Sales reads Legal holds. Legal reads negotiation ceilings. Data leaks. |
+| Approach                | Problem                                                                                             |
+| ----------------------- | --------------------------------------------------------------------------------------------------- |
+| Total memory siloing    | Agents repeat work, miss shared context, have amnesia                                               |
+| Open shared memory      | Sales reads Legal holds. Legal reads negotiation ceilings. Data leaks.                              |
 | Prompt-level separation | "Don't mention compliance data" -- the data still passes through recall. LLMs can still surface it. |
 
 **MemClaw resolves this at the retrieval layer.** Fleet boundaries are enforced as query predicates before the hybrid search runs. An agent cannot surface what it was never given. No prompt engineering required -- the enforcement happens in the query layer, not in the system prompt.
@@ -192,13 +191,13 @@ Each agent has a declared scope in its `IDENTITY.md`. MemClaw uses this to enfor
 
 ### OSS vs. managed isolation
 
-| Isolation layer | OSS local deploy | Managed (memclaw.net) |
+| Isolation layer    | OSS local deploy                                     | Managed (memclaw.net)                          |
 | ------------------ | ---------------------------------------------------- | ---------------------------------------------- |
-| Tenant isolation | Single tenant; separate instances for true isolation | Full DB-level tenant isolation per org |
-| Fleet isolation | Query predicate enforcement (this repo) | Query predicate + row-level security |
-| `scope_agent` ACL | Per-row server-side ACL | Per-row server-side ACL |
-| Audit trail | Available | Available with retention policies |
-| Fleet provisioning | Auto-created on first write | Dashboard or API, with access control policies |
+| Tenant isolation   | Single tenant; separate instances for true isolation | Full DB-level tenant isolation per org         |
+| Fleet isolation    | Query predicate enforcement (this repo)              | Query predicate + row-level security           |
+| `scope_agent` ACL  | Per-row server-side ACL                              | Per-row server-side ACL                        |
+| Audit trail        | Available                                            | Available with retention policies              |
+| Fleet provisioning | Auto-created on first write                          | Dashboard or API, with access control policies |
 
 For production deployments where legal/sales data separation must be auditable, the managed service or a separate-tenant pattern provides the stronger guarantee. For experimentation, learning, and development, the local OSS deploy used in this repo demonstrates the fleet boundary mechanics end to end.
 
@@ -255,11 +254,11 @@ For production deployments where legal/sales data separation must be auditable, 
 
 ## Agent Scope Matrix
 
-| Agent | Fleet Access | Primary Use | Hard Boundary |
+| Agent         | Fleet Access                       | Primary Use                               | Hard Boundary               |
 | ------------- | ---------------------------------- | ----------------------------------------- | --------------------------- |
-| `sales-agent` | `fleet-sales` · `fleet-org-shared` | Pipeline, renewals, deal stage | Cannot access `fleet-legal` |
-| `legal-agent` | `fleet-legal` · `fleet-org-shared` | Holds, compliance, risk flags | Cannot access `fleet-sales` |
-| `admin-agent` | All three fleets | Cross-fleet synthesis, conflict detection | None |
+| `sales-agent` | `fleet-sales` · `fleet-org-shared` | Pipeline, renewals, deal stage            | Cannot access `fleet-legal` |
+| `legal-agent` | `fleet-legal` · `fleet-org-shared` | Holds, compliance, risk flags             | Cannot access `fleet-sales` |
+| `admin-agent` | All three fleets                   | Cross-fleet synthesis, conflict detection | None                        |
 
 ### Governance boundaries verified
 
@@ -278,18 +277,18 @@ The boundaries are enforced at two levels: the query predicate in MemClaw (stora
 
 MemClaw exposes its full capability surface through 10 MCP tools. OpenClaw registers these at gateway start and agents call them as standard tool calls.
 
-| Tool | What it does |
+| Tool                 | What it does                                                                                                             |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `memclaw_write` | Store memory with auto-enrichment: type, title, tags, PII scan, entity extraction, contradiction check |
-| `memclaw_recall` | Hybrid vector + keyword search scoped to declared `fleet_ids` |
-| `memclaw_manage` | Read, update, transition, delete, bulk-delete, or trace lineage of a specific memory |
-| `memclaw_list` | Browse by metadata: type, status, agent, date |
-| `memclaw_insights` | LLM-powered reflection with six focus modes: `contradictions`, `failures`, `stale`, `divergence`, `patterns`, `discover` |
-| `memclaw_stats` | Aggregate counts by type, agent, status |
-| `memclaw_evolve` | Report outcomes against recalled memories and close the learning loop |
-| `memclaw_tune` | Adjust recall weighting and enrichment parameters |
-| `memclaw_entity_get` | Fetch a specific entity record from the knowledge graph |
-| `memclaw_doc` | Return tool schema documentation |
+| `memclaw_write`      | Store memory with auto-enrichment: type, title, tags, PII scan, entity extraction, contradiction check                   |
+| `memclaw_recall`     | Hybrid vector + keyword search scoped to declared `fleet_ids`                                                            |
+| `memclaw_manage`     | Read, update, transition, delete, bulk-delete, or trace lineage of a specific memory                                     |
+| `memclaw_list`       | Browse by metadata: type, status, agent, date                                                                            |
+| `memclaw_insights`   | LLM-powered reflection with six focus modes: `contradictions`, `failures`, `stale`, `divergence`, `patterns`, `discover` |
+| `memclaw_stats`      | Aggregate counts by type, agent, status                                                                                  |
+| `memclaw_evolve`     | Report outcomes against recalled memories and close the learning loop                                                    |
+| `memclaw_tune`       | Adjust recall weighting and enrichment parameters                                                                        |
+| `memclaw_entity_get` | Fetch a specific entity record from the knowledge graph                                                                  |
+| `memclaw_doc`        | Return tool schema documentation                                                                                         |
 
 **Memory lifecycle:** MemClaw moves memories through eight statuses (`active`, `pending`, `confirmed`, `cancelled`, `outdated`, `conflicted`, `archived`, `deleted`) based on contradiction detection and outcome feedback. Supersession relationships are tracked via the `supersedes_id` field; use `memclaw_manage op=lineage` to trace them. No manual cleanup required.
 
@@ -301,13 +300,13 @@ MemClaw exposes its full capability surface through 10 MCP tools. OpenClaw regis
 
 ## Why MemClaw vs a Vector DB
 
-| | Shared RAG | MemClaw Fleet Governance |
+|                         | Shared RAG                    | MemClaw Fleet Governance                                                                                      |
 | ----------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Separation mechanism | Prompt instruction | Query predicate enforced at storage layer |
-| Retrieval scope | Broad: all vectors searched | Narrow: `fleet_ids` filter before search |
-| Cross-agent leakage | Possible if prompt is ignored | Data outside declared `fleet_ids` is never retrieved; boundary strength depends on isolation tier (see above) |
-| Audit trail | None | Every read and write logged |
-| Contradiction detection | Manual | Automatic on write: RDF triple comparison + LLM analysis |
+| Separation mechanism    | Prompt instruction            | Query predicate enforced at storage layer                                                                     |
+| Retrieval scope         | Broad: all vectors searched   | Narrow: `fleet_ids` filter before search                                                                      |
+| Cross-agent leakage     | Possible if prompt is ignored | Data outside declared `fleet_ids` is never retrieved; boundary strength depends on isolation tier (see above) |
+| Audit trail             | None                          | Every read and write logged                                                                                   |
+| Contradiction detection | Manual                        | Automatic on write: RDF triple comparison + LLM analysis                                                      |
 
 ---
 
@@ -352,10 +351,10 @@ This repo runs against a **local MemClaw instance** by default -- no account, no
 
 **Two LLM options:**
 
-| Option | Requires | Notes |
-| -------------------------------- | ------------------------------------------------------- | ---------------------------------------- |
-| **LLM gateway / DeepSeek V3** (default) | API key from your LLM gateway provider | OpenAI-compatible endpoint; fastest setup |
-| **Ollama** (fully local, no key) | [Ollama](https://ollama.com) installed + a pulled model | Free, private, no rate limits |
+| Option                                  | Requires                                                | Notes                                     |
+| --------------------------------------- | ------------------------------------------------------- | ----------------------------------------- |
+| **LLM gateway / DeepSeek V3** (default) | API key from your LLM gateway provider                  | OpenAI-compatible endpoint; fastest setup |
+| **Ollama** (fully local, no key)        | [Ollama](https://ollama.com) installed + a pulled model | Free, private, no rate limits             |
 
 > **Want managed MemClaw instead of Docker?** [memclaw.net](https://memclaw.net) offers a hosted service (free tier available) with a dashboard and provisioned fleets. Set `MEMCLAW_API_URL=https://memclaw.net/api/v1` and `MEMCLAW_API_KEY=mc_...` in your `.env` -- everything else stays the same. The managed service also provides full tenant isolation at the database level.
 
@@ -737,20 +736,6 @@ Expected: only memories in `fleet-engineering` and `fleet-org-shared` are return
 
 ---
 
-## Security Notes
-
-> **If you cloned or forked this repo before May 2026:** earlier versions of this repository contained committed secrets in `.openclaw/` (an LLM gateway API key, a gateway bearer token, and an Ed25519 device private key). These should be treated as compromised:
->
-> 1. Revoke the LLM gateway key at your provider immediately.
-> 2. Rotate the OpenClaw gateway bearer token and regenerate your device keypair (`openclaw identity reset`).
-> 3. Purge the secrets from git history: `git filter-repo --invert-paths --path .openclaw/ --path workspace/ --path .claude/settings.local.json` then force-push and verify with `gitleaks`.
-
-- Never commit live API keys. Use `.env` and ensure `.env` is in `.gitignore`
-- Rotate any key that appears in terminal logs, chat history, or git history
-- Keep `MEMCLAW_API_URL` on HTTPS for all hosted deployments
-- `MEMCLAW_AUTO_WRITE_TURNS=false` is the correct value -- the plugin accepts the string `"false"` correctly
-
----
 
 ## Related
 
