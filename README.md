@@ -10,7 +10,6 @@
   with query-time fleet filtering, per-row agent ACLs, and cross-fleet synthesis.
 </p>
 
-
 <p align="center">
   <a href="https://memclaw.net/docs"><img src="https://img.shields.io/badge/docs-memclaw.net-2A9D8F?style=flat-square" /></a>
   <a href="https://github.com/caura-ai/caura-memclaw"><img src="https://img.shields.io/badge/Memory-MemClaw-2A9D8F?style=flat-square" /></a>
@@ -205,52 +204,7 @@ For production deployments where legal/sales data separation must be auditable, 
 
 ## Architecture
 
-```
-+---------------------------------------------------------------------+
-|  OpenClaw Gateway                                                   |
-|                                                                     |
-|  +--------------+  +--------------+  +------------------------+    |
-|  | sales-agent  |  | legal-agent  |  |      admin-agent       |    |
-|  |              |  |              |  |                        |    |
-|  | fleet_ids:   |  | fleet_ids:   |  | fleet_ids:             |    |
-|  | fleet-sales  |  | fleet-legal  |  | fleet-sales            |    |
-|  | fleet-org    |  | fleet-org    |  | fleet-legal            |    |
-|  |   -shared    |  |   -shared    |  | fleet-org-shared       |    |
-|  +------+-------+  +------+-------+  +----------+-------------+    |
-|         |                 |                      |                  |
-|         +-----------------+----------------------+                  |
-|                           |  memclaw_* MCP tools                   |
-+---------------------------+-----------------------------------------+
-                            |
-                            v
-+---------------------------------------------------------------------+
-|  MemClaw  (local Docker / memclaw.net)                              |
-|                                                                     |
-|  Layer 1 -- Tenant boundary (strongest)                            |
-|  Full DB-level partition. Managed service only (or separate         |
-|  OSS instances). Cannot be crossed by any query.                    |
-|                                                                     |
-|  Layer 2 -- scope_agent  (per-row ACL)                             |
-|  Server-side ACL on each memory row. Only the writing agent         |
-|  can recall it, regardless of fleet_ids.                            |
-|                                                                     |
-|  Layer 3 -- fleet_ids filter  (query predicate)                    |
-|  WHERE fleet_id IN (...) runs before vector + keyword search.       |
-|  Records outside declared fleets are never loaded or scored.        |
-|  Boundary strength depends on agents declaring fleet_ids            |
-|  honestly per their AGENTS.md contract.                             |
-|                                                                     |
-|  +-----------------+  +-----------------+  +------------------+    |
-|  |  fleet-sales    |  |  fleet-legal    |  | fleet-org-shared |    |
-|  |                 |  |                 |  |                  |    |
-|  | pipeline        |  | GDPR hold       |  | account context  |    |
-|  | deal stages     |  | compliance      |  | shared rules     |    |
-|  | renewals        |  | risk flags      |  |                  |    |
-|  +-----------------+  +-----------------+  +------------------+    |
-+---------------------------------------------------------------------+
-```
-
----
+![memclaw demo gif](./docs/images/memclaw-flow.png)
 
 ## Agent Scope Matrix
 
@@ -735,7 +689,6 @@ Use memclaw_recall with:
 Expected: only memories in `fleet-engineering` and `fleet-org-shared` are returned. Other fleet records are not loaded, scored, or returned.
 
 ---
-
 
 ## Related
 
