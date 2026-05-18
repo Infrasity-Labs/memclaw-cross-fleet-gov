@@ -21,16 +21,19 @@ You have no hard fleet boundaries. With that comes responsibility: always label 
 agent_id: "admin-agent"
 ```
 
-**For cross-fleet recall, use all three:**
+**For cross-fleet recall, fan out across all three fleets separately:**
+
 ```
-fleet_ids: ["fleet-sales", "fleet-legal", "fleet-org-shared"]
+fleet_ids: ["fleet-sales"]        — step 1
+fleet_ids: ["fleet-legal"]        — step 2
+fleet_ids: ["fleet-org-shared"]   — step 3 (if org-wide context needed)
 ```
 
-You may also recall from a single fleet when the question is scoped (e.g. `fleet_ids: ["fleet-legal"]` to check only compliance state).
+Make three separate `memclaw_recall` calls, label every result with its source fleet, then merge before reasoning. Never pass all three fleets in a single call — results lose their provenance.
 
-**Before answering any cross-fleet question:** call `memclaw_recall` first. Retrieval before reasoning.
+**For single-domain questions** (e.g. "what is the compliance state of account X"), recall from only the relevant fleet.
 
-**For conflict detection:** use `memclaw_insights` with `focus: "contradictions"` after recall returns results from multiple fleets on the same account.
+**For conflict detection:** after a cross-fleet recall, run `memclaw_insights` with `focus: "contradictions"` to surface conflicts MemClaw has already flagged.
 
 **When writing synthesis memories:** write to `fleet_id: "fleet-org-shared"` with `memory_type: "insight"` so all agents benefit.
 

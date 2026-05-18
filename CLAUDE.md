@@ -49,11 +49,16 @@ openclaw dashboard                   # opens http://127.0.0.1:18789
 
 OpenClaw's security validation rejects workspace paths outside `~/.openclaw`. The `openclaw.json` in this repo uses `"../agents/sales-agent"` (relative paths from `.openclaw/`), which resolve to the project `agents/` directory on Linux/Mac but may trigger "Rejected workspace path outside openclawDir" on Windows.
 
-**Windows fix — create junctions (run as admin):**
+**Windows fix — run the setup script (handles this automatically):**
 
 ```powershell
-# Set $REPO to the directory where you cloned this repo
-$REPO = "C:\path\to\memclaw-cross-fleet-gov"   # <-- update this
+.\setup.ps1
+```
+
+If you need to create junctions manually (run as admin):
+
+```powershell
+$REPO = $PSScriptRoot   # or set manually to your clone path
 
 New-Item -ItemType Junction -Path "$HOME\.openclaw\workspace-sales-agent" `
   -Target "$REPO\agents\sales-agent"
@@ -63,14 +68,6 @@ New-Item -ItemType Junction -Path "$HOME\.openclaw\workspace-legal-agent" `
 
 New-Item -ItemType Junction -Path "$HOME\.openclaw\workspace-admin-agent" `
   -Target "$REPO\agents\admin-agent"
-```
-
-Then update `openclaw.json` agent workspaces to use the junction names:
-
-```json
-{ "id": "sales-agent",  "workspace": "workspace-sales-agent" },
-{ "id": "legal-agent",  "workspace": "workspace-legal-agent" },
-{ "id": "admin-agent",  "workspace": "workspace-admin-agent" }
 ```
 
 Run `openclaw doctor` after any workspace path change.
@@ -87,7 +84,7 @@ Run `openclaw doctor` after any workspace path change.
 
 ### Configuration Layers
 
-- **`.openclaw/openclaw.json`** — gateway config: model provider (LLM gateway/DeepSeek V3), agent workspace paths, MemClaw plugin registration. The plugin is registered under `plugins.slots.memory = "memclaw"` (and `plugins.slots.contextEngine = "memclaw"` in the current file, though canonical installs may only set `slots.memory`).
+- **`.openclaw/openclaw.json`** — gateway config: model provider (LLM gateway/DeepSeek V3), agent workspace paths, MemClaw plugin registration. The plugin is registered under `plugins.slots.memory = "memclaw"`.
 - **`agents/<agent>/SOUL.md`** — injected first each session; defines persona and tone
 - **`agents/<agent>/AGENTS.md`** — injected second; defines workspace conventions, memory protocol, tool usage rules
 - **`agents/<agent>/IDENTITY.md`** — fleet scope and MemClaw-specific identity for that agent
@@ -104,13 +101,12 @@ Lives at `.openclaw/plugins/memclaw/`. Key source files:
 
 ### MCP Tools Exposed
 
-`memclaw_write`, `memclaw_recall`, `memclaw_manage`, `memclaw_list`, `memclaw_insights`, `memclaw_stats`, `memclaw_evolve`, `memclaw_tune`, `memclaw_entity_get`, `memclaw_doc`
+`memclaw_write`, `memclaw_recall`, `memclaw_manage`, `memclaw_list`, `memclaw_insights`, `memclaw_stats`, `memclaw_evolve`, `memclaw_tune`, `memclaw_entity_get`, `memclaw_keystones_set`, `memclaw_doc`
 
 Always pass `agent_id: "<this-agent-id>"` explicitly on every tool call. If omitted, the plugin falls back to an install-scoped default that may not isolate memories correctly.
 
 ## Key Constraints
 
-- `MEMCLAW_AUTO_WRITE_TURNS=false` — the plugin accepts the string `"false"` correctly
 - `fleet_ids` in `memclaw_recall` is an array, not a string: `["fleet-sales", "fleet-org-shared"]`
 - Keep `MEMCLAW_API_URL` on HTTPS for hosted deployments; the plugin warns (but doesn't block) HTTP when an API key is set
 - Command signatures (HMAC) are optional by default — the plugin accepts unsigned commands and warns once per process. Set `MEMCLAW_REQUIRE_SIGNED_COMMANDS=true` only behind an enterprise signing gateway

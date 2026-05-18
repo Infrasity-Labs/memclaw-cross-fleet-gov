@@ -45,15 +45,42 @@
     "list": [
       {
         "id": "sales-agent",
-        "workspace": "workspace-sales-agent"
+        "workspace": "../agents/sales-agent",
+        "pluginConfig": {
+          "memclaw": {
+            "MEMCLAW_API_URL": "${MEMCLAW_API_URL}",
+            "MEMCLAW_API_KEY": "${MEMCLAW_API_KEY}",
+            "MEMCLAW_TENANT_ID": "${MEMCLAW_TENANT_ID}",
+            "MEMCLAW_FLEET_ID": "fleet-sales",
+            "MEMCLAW_AGENT_ID": "sales-agent"
+          }
+        }
       },
       {
         "id": "legal-agent",
-        "workspace": "workspace-legal-agent"
+        "workspace": "../agents/legal-agent",
+        "pluginConfig": {
+          "memclaw": {
+            "MEMCLAW_API_URL": "${MEMCLAW_API_URL}",
+            "MEMCLAW_API_KEY": "${MEMCLAW_API_KEY}",
+            "MEMCLAW_TENANT_ID": "${MEMCLAW_TENANT_ID}",
+            "MEMCLAW_FLEET_ID": "fleet-legal",
+            "MEMCLAW_AGENT_ID": "legal-agent"
+          }
+        }
       },
       {
         "id": "admin-agent",
-        "workspace": "workspace-admin-agent"
+        "workspace": "../agents/admin-agent",
+        "pluginConfig": {
+          "memclaw": {
+            "MEMCLAW_API_URL": "${MEMCLAW_API_URL}",
+            "MEMCLAW_API_KEY": "${MEMCLAW_API_KEY}",
+            "MEMCLAW_TENANT_ID": "${MEMCLAW_TENANT_ID}",
+            "MEMCLAW_FLEET_ID": "fleet-org-shared",
+            "MEMCLAW_AGENT_ID": "admin-agent"
+          }
+        }
       }
     ]
   },
@@ -210,33 +237,28 @@
     "lastRunMode": "local"
   },
   "plugins": {
-  "entries": {
-    "memclaw": {
-      "enabled": true,
-      "config": {
-        "MEMCLAW_API_KEY": "${MEMCLAW_API_KEY}",
-        "MEMCLAW_API_URL": "${MEMCLAW_API_URL}",
-        "MEMCLAW_TENANT_ID": "${MEMCLAW_TENANT_ID}",
-        "MEMCLAW_FLEET_ID": "fleet-org-shared",
-        "MEMCLAW_AUTO_WRITE_TURNS": false
+    "entries": {
+      "memclaw": {
+        "enabled": true,
+        "config": {
+          "MEMCLAW_AUTO_WRITE_TURNS": false
+        }
       }
+    },
+
+    "allow": [
+      "memclaw"
+    ],
+
+    "slots": {
+      "memory": "memclaw"
+    },
+
+    "load": {
+      "paths": [
+        "./plugins/memclaw"
+      ]
     }
-  },
-
-  "allow": [
-    "memclaw"
-  ],
-
-  "slots": {
-    "memory": "memclaw",
-    "contextEngine": "memclaw"
-  },
-
-  "load": {
-    "paths": [
-      "./plugins/memclaw"
-    ]
   }
-}
 }
 
