@@ -59,3 +59,8 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+
+# Bare git clones / mirrors
+*.git/
+
+.secrets.baseline

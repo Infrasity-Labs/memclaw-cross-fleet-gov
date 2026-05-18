@@ -1,10 +1,10 @@
-# CLAUDE.md
+﻿# CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## What This Repo Is
 
-A multi-agent governance demo showing MemClaw enforcing fleet-scoped memory boundaries across three OpenClaw agents. Three agents (sales, legal, admin) share one MemClaw tenant with three isolated fleet partitions. Fleet boundaries are query predicates at the storage layer — not prompt instructions — so data outside declared `fleet_ids` is never loaded, scored, or returned. For hard cross-domain isolation (cannot be bypassed at the prompt level), use separate tenants per domain or the managed service.
+A multi-agent governance demo showing MemClaw enforcing fleet-scoped memory boundaries across three OpenClaw agents. Three agents (sales, legal, admin) share one MemClaw tenant with three isolated fleet partitions. Fleet boundaries are query predicates at the storage layer - not prompt instructions - so data outside declared `fleet_ids` is never loaded, scored, or returned. For hard cross-domain isolation (cannot be bypassed at the prompt level), use separate tenants per domain or the managed service.
 
 ## Prerequisites
 
@@ -13,7 +13,7 @@ A multi-agent governance demo showing MemClaw enforcing fleet-scoped memory boun
 - OpenClaw CLI: `npm install -g openclaw@latest`
 - LLM gateway API key for DeepSeek V3 (or any OpenAI-compatible model)
 
-This repo defaults to a **local MemClaw instance** — no cloud account or API key required for MemClaw. Fleet partitions (`fleet-org-shared`, `fleet-sales`, `fleet-legal`) are created automatically on first write.
+This repo defaults to a **local MemClaw instance** - no cloud account or API key required for MemClaw. Fleet partitions (`fleet-org-shared`, `fleet-sales`, `fleet-legal`) are created automatically on first write.
 
 ## Environment Setup
 
@@ -49,7 +49,7 @@ openclaw dashboard                   # opens http://127.0.0.1:18789
 
 OpenClaw's security validation rejects workspace paths outside `~/.openclaw`. The `openclaw.json` in this repo uses `"../agents/sales-agent"` (relative paths from `.openclaw/`), which resolve to the project `agents/` directory on Linux/Mac but may trigger "Rejected workspace path outside openclawDir" on Windows.
 
-**Windows fix — run the setup script (handles this automatically):**
+**Windows fix - run the setup script (handles this automatically):**
 
 ```powershell
 .\setup.ps1
@@ -80,24 +80,24 @@ Run `openclaw doctor` after any workspace path change.
 |---|---|---|
 | `sales-agent` | `fleet-sales`, `fleet-org-shared` | Cannot access `fleet-legal` |
 | `legal-agent` | `fleet-legal`, `fleet-org-shared` | Cannot access `fleet-sales` |
-| `admin-agent` | All three fleets | None — cross-fleet synthesis |
+| `admin-agent` | All three fleets | None - cross-fleet synthesis |
 
 ### Configuration Layers
 
-- **`.openclaw/openclaw.json`** — gateway config: model provider (LLM gateway/DeepSeek V3), agent workspace paths, MemClaw plugin registration. The plugin is registered under `plugins.slots.memory = "memclaw"`.
-- **`agents/<agent>/SOUL.md`** — injected first each session; defines persona and tone
-- **`agents/<agent>/AGENTS.md`** — injected second; defines workspace conventions, memory protocol, tool usage rules
-- **`agents/<agent>/IDENTITY.md`** — fleet scope and MemClaw-specific identity for that agent
-- **`skills/memclaw-governance.md`** — shared governance skill copied into every agent workspace; update once, redeploy to all agents
+- **`.openclaw/openclaw.json`** - gateway config: model provider (LLM gateway/DeepSeek V3), agent workspace paths, MemClaw plugin registration. The plugin is registered under `plugins.slots.memory = "memclaw"`.
+- **`agents/<agent>/SOUL.md`** - injected first each session; defines persona and tone
+- **`agents/<agent>/AGENTS.md`** - injected second; defines workspace conventions, memory protocol, tool usage rules
+- **`agents/<agent>/IDENTITY.md`** - fleet scope and MemClaw-specific identity for that agent
+- **`skills/memclaw-governance.md`** - shared governance skill copied into every agent workspace; update once, redeploy to all agents
 
 ### MemClaw Plugin
 
 Lives at `.openclaw/plugins/memclaw/`. Key source files:
 
-- [src/paths.ts](.openclaw/plugins/memclaw/src/paths.ts) — all paths resolve from `~/.openclaw`; plugin dir is always `~/.openclaw/plugins/memclaw`
-- [src/resolve-agent.ts](.openclaw/plugins/memclaw/src/resolve-agent.ts) — agent ID resolution order: explicit `agent_id` param → session key → env var `MEMCLAW_AGENT_ID` → install-scoped fallback
-- [src/validation.ts](.openclaw/plugins/memclaw/src/validation.ts) — workspace path containment check (`isContainedPath`), HMAC command signing, UUID validation
-- [src/tools.ts](.openclaw/plugins/memclaw/src/tools.ts) — MCP tool implementations
+- [src/paths.ts](.openclaw/plugins/memclaw/src/paths.ts) - all paths resolve from `~/.openclaw`; plugin dir is always `~/.openclaw/plugins/memclaw`
+- [src/resolve-agent.ts](.openclaw/plugins/memclaw/src/resolve-agent.ts) - agent ID resolution order: explicit `agent_id` param → session key → env var `MEMCLAW_AGENT_ID` → install-scoped fallback
+- [src/validation.ts](.openclaw/plugins/memclaw/src/validation.ts) - workspace path containment check (`isContainedPath`), HMAC command signing, UUID validation
+- [src/tools.ts](.openclaw/plugins/memclaw/src/tools.ts) - MCP tool implementations
 
 ### MCP Tools Exposed
 
@@ -109,4 +109,4 @@ Always pass `agent_id: "<this-agent-id>"` explicitly on every tool call. If omit
 
 - `fleet_ids` in `memclaw_recall` is an array, not a string: `["fleet-sales", "fleet-org-shared"]`
 - Keep `MEMCLAW_API_URL` on HTTPS for hosted deployments; the plugin warns (but doesn't block) HTTP when an API key is set
-- Command signatures (HMAC) are optional by default — the plugin accepts unsigned commands and warns once per process. Set `MEMCLAW_REQUIRE_SIGNED_COMMANDS=true` only behind an enterprise signing gateway
+- Command signatures (HMAC) are optional by default - the plugin accepts unsigned commands and warns once per process. Set `MEMCLAW_REQUIRE_SIGNED_COMMANDS=true` only behind an enterprise signing gateway

@@ -1,3 +1,4 @@
+﻿
 <p align="center">
   <img src="./docs/images/memclaw_banner.jpeg" alt="MemClaw Cross-Fleet Governance" width="100%" />
 </p>
@@ -216,11 +217,11 @@ For production deployments where legal/sales data separation must be auditable, 
 
 Fleet isolation in this repo is enforced at two levels:
 
-**1. Per-agent plugin config (`openclaw.json`)** — each agent's `pluginConfig.memclaw` block sets its own `MEMCLAW_FLEET_ID` and `MEMCLAW_AGENT_ID`. This scopes the plugin's default fleet context to that agent at the gateway level — no shared global default can bleed across agents.
+**1. Per-agent plugin config (`openclaw.json`)** - each agent's `pluginConfig.memclaw` block sets its own `MEMCLAW_FLEET_ID` and `MEMCLAW_AGENT_ID`. This scopes the plugin's default fleet context to that agent at the gateway level - no shared global default can bleed across agents.
 
-**2. `AGENTS.md` contract (prompt layer)** — each agent's `AGENTS.md` declares its authorized `fleet_ids` and carries an explicit instruction never to include unauthorized fleets in recall calls. The storage layer filters to whatever `fleet_ids` are declared — an agent that follows its `AGENTS.md` contract cannot surface another fleet's memories.
+**2. `AGENTS.md` contract (prompt layer)** - each agent's `AGENTS.md` declares its authorized `fleet_ids` and carries an explicit instruction never to include unauthorized fleets in recall calls. The storage layer filters to whatever `fleet_ids` are declared - an agent that follows its `AGENTS.md` contract cannot surface another fleet's memories.
 
-All three agents pass `agent_id` on every tool call — required for per-row `scope_agent` ACL enforcement and audit logging. For hard isolation that cannot be bypassed at the prompt level, see [Memory Scope and Visibility Mechanisms](#memory-scope-and-visibility-mechanisms).
+All three agents pass `agent_id` on every tool call - required for per-row `scope_agent` ACL enforcement and audit logging. For hard isolation that cannot be bypassed at the prompt level, see [Memory Scope and Visibility Mechanisms](#memory-scope-and-visibility-mechanisms).
 
 ---
 
@@ -272,23 +273,44 @@ MemClaw exposes its full capability surface through 11 MCP tools. OpenClaw regis
 +-- agents/
 |   +-- sales-agent/
 |   |   +-- SOUL.md                 <- Personality, tone, hard limits
-|   |   +-- AGENTS.md               <- Fleet scope, recall protocol, write rules
-|   |   +-- IDENTITY.md             <- Fleet scope and MemClaw identity
+|   |   +-- AGENTS.md               <- Fleet scope, recall protocol, write rules, heartbeat + bootstrap
+|   |   +-- IDENTITY.md             <- Agent name, persona, fleet IDs, agent_id (Vera / sales-agent)
+|   |   +-- skills/
+|   |   |   +-- memclaw-governance.md  <- Deployed copy of the shared governance skill
+|   |   +-- .openclaw/
+|   |       +-- workspace-state.json   <- OpenClaw workspace state (auto-managed)
 |   +-- legal-agent/
 |   |   +-- SOUL.md
 |   |   +-- AGENTS.md
-|   |   +-- IDENTITY.md
+|   |   +-- IDENTITY.md             <- Agent name, persona, fleet IDs, agent_id (Lex / legal-agent)
+|   |   +-- skills/
+|   |   |   +-- memclaw-governance.md
+|   |   +-- .openclaw/
+|   |       +-- workspace-state.json
 |   +-- admin-agent/
 |       +-- SOUL.md
 |       +-- AGENTS.md
-|       +-- IDENTITY.md
+|       +-- IDENTITY.md             <- Agent name, persona, fleet IDs, agent_id (Axis / admin-agent)
+|       +-- skills/
+|       |   +-- memclaw-governance.md
+|       +-- .openclaw/
+|           +-- workspace-state.json
 +-- skills/
-    +-- memclaw-governance.md       <- Shared skill: fleet_ids rules, recall + write protocol
+    +-- memclaw-governance.md       <- Source: fleet_ids rules, recall + write protocol
 ```
 
 **`SOUL.md`** is injected first on every session and defines who the agent is.
-**`AGENTS.md`** is injected second and defines what the agent does, which fleets it can access, and how it uses MemClaw.
-**`memclaw-governance.md`** is a shared skill copied into every agent workspace. Update once, redeploy to all agents.
+
+**`AGENTS.md`** is injected second and defines what the agent does, which fleets it can access, and how it uses MemClaw. It also encodes two runtime behaviors:
+
+- **Bootstrap:** at session start, the agent reads `skills/memclaw-governance.md` before making any MemClaw call. This loads fleet scoping rules, recall protocol, conflict reporting, and escalation triggers.
+- **Heartbeat:** on long-running tasks, the agent checkpoints a MemClaw write every 30 minutes. No silent completions - every meaningful outcome must produce a write.
+
+**`IDENTITY.md`** carries the agent's canonical identity record: name (Vera / Lex / Axis), creature archetype, vibe, emoji, authorized fleet IDs, and `agent_id`. This is the source of truth for the `agent_id` that must be passed on every MemClaw tool call, and the fleet list that scopes all recall and write operations.
+
+**`skills/memclaw-governance.md`** (per-agent copy) is the deployed instance of the shared governance skill. The source lives at `skills/memclaw-governance.md` - edit once there, then copy to each agent's `skills/` directory to redeploy.
+
+**`.openclaw/workspace-state.json`** is auto-managed by the OpenClaw gateway. Do not edit manually.
 
 ---
 
@@ -363,9 +385,36 @@ git clone https://github.com/Infrasity-Labs/memclaw-cross-fleet-gov.git
 cd memclaw-cross-fleet-gov
 ```
 
-### 2. Run the setup script
+### 2. Configure your LLM provider (do this before running the setup script)
 
-The setup script handles everything in one shot: starts MemClaw, creates workspace links, registers agents, installs the plugin, and starts the gateway.
+The setup script starts the OpenClaw gateway at the end. The gateway needs a configured LLM provider to start successfully, so pick your option now.
+
+**Option A - LLM gateway (OpenAI-compatible, e.g. AISA / DeepSeek V3)**
+
+```bash
+openclaw onboard --install-daemon
+openclaw onboard --non-interactive --accept-risk \
+  --custom-api-key "your-llm-gateway-key" \
+  --custom-base-url "https://your-gateway.example.com/v1"
+```
+
+**Option B - Ollama (fully local, no API key required)**
+
+```bash
+# Install Ollama from https://ollama.com, then pull a model:
+ollama pull qwen2.5:14b   # or llama3.1:8b, mistral, etc.
+
+openclaw onboard --install-daemon
+openclaw onboard --non-interactive --accept-risk \
+  --custom-api-key "ollama" \
+  --custom-base-url "http://localhost:11434/v1"
+```
+
+Run `openclaw doctor` to confirm the provider is configured before continuing.
+
+### 3. Run the setup script
+
+The setup script handles the rest in one shot: starts MemClaw, creates workspace links, registers agents, installs the plugin, and starts the gateway.
 
 **macOS / Linux**
 
@@ -373,32 +422,27 @@ The setup script handles everything in one shot: starts MemClaw, creates workspa
 bash setup.sh
 ```
 
-**Windows (PowerShell — run as Administrator)**
+**Windows (PowerShell - run as Administrator)**
 
 ```powershell
 .\setup.ps1
 ```
 
-The script is idempotent — safe to re-run if anything goes wrong.
+The script is idempotent - safe to re-run if anything goes wrong.
 
-### 3. Configure your LLM provider
+### 4. Set environment variables
 
-Open `.env` (created by the script) and fill in your LLM key:
+Open `.env` (created by the script) and fill in your values:
 
-**Option A — LLM gateway**
+**Option A - LLM gateway**
 
 ```env
-LLM_GATEWAY_API_KEY
-LLM_GATEWAY_MODEL
-LLM_GATEWAY_BASE_URL
-
+LLM_GATEWAY_API_KEY=your-api-key
+LLM_GATEWAY_MODEL=deepseek-v3
+LLM_GATEWAY_BASE_URL=https://your-gateway.example.com/v1
 ```
 
-**Option B — Ollama (fully local, no API key)**
-
-```bash
-ollama pull qwen2.5:14b   # or llama3.1:8b, mistral, etc.
-```
+**Option B - Ollama**
 
 ```env
 LLM_GATEWAY_API_KEY=ollama
@@ -406,20 +450,20 @@ LLM_GATEWAY_MODEL=qwen2.5:14b
 LLM_GATEWAY_BASE_URL=http://localhost:11434/v1
 ```
 
-Then restart the gateway to pick up the new key:
+Then restart the gateway to pick up the values:
 
 ```bash
 openclaw gateway restart
 ```
 
-### 4. Verify
+### 5. Verify
 
 ```bash
 openclaw agents list --bindings   # all three agents should show memclaw bound
 openclaw dashboard                 # opens http://127.0.0.1:18789
 ```
 
-### 5. Confirm MemClaw tools are loaded
+### 6. Confirm MemClaw tools are loaded
 
 In any agent session:
 
@@ -447,7 +491,7 @@ Use memclaw_write to store:
   agent_id: "legal-agent"
 ```
 
-### Step B: Sales agent cannot see it — physically
+### Step B: Sales agent cannot see it - physically
 
 ```
 /agent sales-agent
@@ -526,7 +570,7 @@ Tenant: default  (single local instance, port 8000)
   +-- fleet-legal         -> compliance and risk, legal-agent only
 ```
 
-**Tenant** = the organization boundary. In the OSS local deploy, all agents share a single `default` tenant. For hard cross-domain isolation that cannot be bypassed, use separate tenants — available via the managed service at [memclaw.net](https://memclaw.net) or by running separate instances.
+**Tenant** = the organization boundary. In the OSS local deploy, all agents share a single `default` tenant. For hard cross-domain isolation that cannot be bypassed, use separate tenants - available via the managed service at [memclaw.net](https://memclaw.net) or by running separate instances.
 
 **Fleet** = the access boundary within a tenant. Every `memclaw_recall` call passes a `WHERE fleet_id IN (...)` predicate before the search runs. An agent scoped to `fleet-sales` never loads, scores, or returns records from `fleet-legal`.
 

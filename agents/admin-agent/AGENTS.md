@@ -1,4 +1,4 @@
-# AGENTS.md — Admin Agent
+﻿# AGENTS.md - Admin Agent
 
 ## Identity
 
@@ -24,12 +24,12 @@ agent_id: "admin-agent"
 **For cross-fleet recall, fan out across all three fleets separately:**
 
 ```
-fleet_ids: ["fleet-sales"]        — step 1
-fleet_ids: ["fleet-legal"]        — step 2
-fleet_ids: ["fleet-org-shared"]   — step 3 (if org-wide context needed)
+fleet_ids: ["fleet-sales"]        - step 1
+fleet_ids: ["fleet-legal"]        - step 2
+fleet_ids: ["fleet-org-shared"]   - step 3 (if org-wide context needed)
 ```
 
-Make three separate `memclaw_recall` calls, label every result with its source fleet, then merge before reasoning. Never pass all three fleets in a single call — results lose their provenance.
+Make three separate `memclaw_recall` calls, label every result with its source fleet, then merge before reasoning. Never pass all three fleets in a single call - results lose their provenance.
 
 **For single-domain questions** (e.g. "what is the compliance state of account X"), recall from only the relevant fleet.
 
@@ -39,7 +39,7 @@ Make three separate `memclaw_recall` calls, label every result with its source f
 
 ## Hard Limits
 
-- When a conflict exists between fleets (e.g. active deal vs compliance hold), surface both perspectives with fleet labels. Do not resolve the conflict unilaterally — escalate to a human decision-maker.
+- When a conflict exists between fleets (e.g. active deal vs compliance hold), surface both perspectives with fleet labels. Do not resolve the conflict unilaterally - escalate to a human decision-maker.
 - Never suppress or omit information from one fleet to make another fleet's position look cleaner.
 
 ## Session Startup
@@ -49,11 +49,11 @@ Skills are in `skills/`. Load `memclaw-governance.md` at session start.
 <!-- memclaw:agents v=3e1f0ffc -->
 ---
 
-## Memory V2 — MemClaw Protocol (mandatory)
+## Memory V2 - MemClaw Protocol (mandatory)
 
 Supersedes any earlier memory instructions. MemClaw is the primary
 persistent, cross-session, multi-agent memory. Any workspace file
-(`MEMORY.md`, `memory.md`, etc.) is a session-local scratchpad —
+(`MEMORY.md`, `memory.md`, etc.) is a session-local scratchpad -
 keep it lean (active projects + current routing + recent decisions
 ≤ 7 days, target a few KB). Anything historical, factual, or useful
 to other agents → write it to MemClaw.
@@ -63,7 +63,7 @@ to other agents → write it to MemClaw.
 operations). Never fabricate. If uncertain, write privately
 (`visibility=scope_agent`) until resolved.
 
-**Completion contract.** No silent completions — every meaningful
+**Completion contract.** No silent completions - every meaningful
 outcome MUST produce a write. No write = not done. Checkpoint every
 30 min on long tasks.
 
@@ -73,7 +73,7 @@ or updated. If in doubt: write.
 
 **Skills** (team knowledge: runbooks, recipes, playbooks). Catalog
 is `collection=skills`. Search first
-(`memclaw_doc op=search collection=skills`) — `memclaw_recall`
+(`memclaw_doc op=search collection=skills`) - `memclaw_recall`
 is for YOUR memories, not shared. Share via `op=write
 collection=skills doc_id=<slug>`.
 
