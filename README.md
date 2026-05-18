@@ -102,8 +102,6 @@ This repo is a **use-case implementation**: three OpenClaw agents (Sales, Legal,
 
 ![Admin agent cross-fleet recall](./docs/images/memclaw%20recall.png)
 
-> **The conflict:** `fleet-sales` shows the Acme Corp renewal in active negotiation. `fleet-legal` shows the MSA auto-renewal clause requiring legal review before any amendments. Only the admin agent sees both, because only it declares all three fleets in its `memclaw_recall` call.
-
 ---
 
 ## The Problem
