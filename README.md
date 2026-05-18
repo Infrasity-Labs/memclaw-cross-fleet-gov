@@ -42,7 +42,7 @@
 
 ## What is OpenClaw
 
-[OpenClaw](https://www.stack-junkie.com/blog/openclaw-system-prompt-design-guide) is an open-source agent orchestration gateway. It runs locally as a daemon, registers named agents from workspace directories, and exposes them through a unified chat interface and API. Each agent has its own workspace (a directory containing identity files: `SOUL.md`, `AGENTS.md`, `IDENTITY.md`) that are injected as system context at session start, along with its own plugin bindings (MCP servers, memory backends, tools).
+[OpenClaw](https://github.com/openclaw/openclaw) is an open-source agent orchestration gateway. It runs locally as a daemon, registers named agents from workspace directories, and exposes them through a unified chat interface and API. Each agent has its own workspace (a directory containing identity files: `SOUL.md`, `AGENTS.md`, `IDENTITY.md`) that are injected as system context at session start, along with its own plugin bindings (MCP servers, memory backends, tools).
 
 In this repo, OpenClaw is doing three things:
 
@@ -64,15 +64,15 @@ npm install -g openclaw@latest
 
 What makes MemClaw different from a vector database:
 
-| Capability                  | What it means                                                                                                                                                                                                |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Fleet isolation**         | Memory partitioned by `fleet_id`. Every recall passes a `WHERE fleet_id IN (...)` predicate before the search runs. Boundaries are a query-layer contract, not prompt instructions.                          |
-| **LLM enrichment on write** | Every `memclaw_write` auto-classifies type, generates title/summary/tags, scans PII, extracts entities, detects contradictions from a single `content` field                                                 |
-| **Hybrid recall**           | `memclaw_recall` combines vector similarity, keyword search, and knowledge graph traversal in one call                                                                                                       |
+| Capability                  | What it means                                                                                                                                                                                                             |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Fleet isolation**         | Memory partitioned by `fleet_id`. Every recall passes a `WHERE fleet_id IN (...)` predicate before the search runs. Boundaries are a query-layer contract, not prompt instructions.                                       |
+| **LLM enrichment on write** | Every `memclaw_write` auto-classifies type, generates title/summary/tags, scans PII, extracts entities, detects contradictions from a single `content` field                                                              |
+| **Hybrid recall**           | `memclaw_recall` combines vector similarity, keyword search, and knowledge graph traversal in one call                                                                                                                    |
 | **8-status lifecycle**      | Memories move through `active`, `pending`, `confirmed`, `cancelled`, `outdated`, `conflicted`, `archived`, `deleted` statuses automatically; supersession is tracked via `supersedes_id` FK (`memclaw_manage op=lineage`) |
-| **Crystallizer**            | LLM batch process that merges near-duplicate memories into canonical atomic facts with full provenance                                                                                                       |
-| **Audit trail**             | Every read and write logged. "Which agent recalled this memory and when" is always answerable                                                                                                                |
-| **Karpathy Loop**           | Agents report outcomes via `memclaw_evolve`; the system reinforces what works and generates preventive rules on failure                                                                                      |
+| **Crystallizer**            | LLM batch process that merges near-duplicate memories into canonical atomic facts with full provenance                                                                                                                    |
+| **Audit trail**             | Every read and write logged. "Which agent recalled this memory and when" is always answerable                                                                                                                             |
+| **Karpathy Loop**           | Agents report outcomes via `memclaw_evolve`; the system reinforces what works and generates preventive rules on failure                                                                                                   |
 
 This repo is a **use-case implementation**: three OpenClaw agents (Sales, Legal, Admin) operating against a single MemClaw instance with three fleet partitions, showing what MemClaw's governance layer looks like in a real multi-agent deployment.
 
@@ -385,12 +385,13 @@ The script is idempotent — safe to re-run if anything goes wrong.
 
 Open `.env` (created by the script) and fill in your LLM key:
 
-**Option A — LLM gateway (OpenAI-compatible, e.g. AISA/DeepSeek)**
+**Option A — LLM gateway**
 
 ```env
-AISA_API_KEY=sk-...                     # your LLM gateway API key
-AISA_MODEL=deepseek-v3
-AISA_BASE_URL=https://api.aisa.one/v1
+LLM_GATEWAY_API_KEY
+LLM_GATEWAY_MODEL
+LLM_GATEWAY_BASE_URL
+
 ```
 
 **Option B — Ollama (fully local, no API key)**
@@ -400,9 +401,9 @@ ollama pull qwen2.5:14b   # or llama3.1:8b, mistral, etc.
 ```
 
 ```env
-AISA_API_KEY=ollama                     # any non-empty string
-AISA_MODEL=qwen2.5:14b
-AISA_BASE_URL=http://localhost:11434/v1
+LLM_GATEWAY_API_KEY=ollama
+LLM_GATEWAY_MODEL=qwen2.5:14b
+LLM_GATEWAY_BASE_URL=http://localhost:11434/v1
 ```
 
 Then restart the gateway to pick up the new key:
