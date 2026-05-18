@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-# setup.sh — First-time setup for memclaw-cross-fleet-gov (macOS / Linux)
+﻿#!/usr/bin/env bash
+# setup.sh - First-time setup for memclaw-cross-fleet-gov (macOS / Linux)
 # Run once from the repo root: bash setup.sh
 # After this completes, day-to-day use is just: openclaw gateway restart
 
@@ -16,7 +16,7 @@ ok()    { echo "   OK: $1"; }
 warn()  { echo "   WARN: $1"; }
 
 echo
-echo "MemClaw Cross-Fleet Gov — Setup"
+echo "MemClaw Cross-Fleet Gov - Setup"
 echo "Repo: $REPO"
 
 # ── 1. Prerequisites ──────────────────────────────────────────────────────────
@@ -39,7 +39,7 @@ step "Environment file"
 
 if [ ! -f "$REPO/.env" ]; then
     cp "$REPO/.env.example" "$REPO/.env"
-    warn ".env created from .env.example — open it and fill in AISA_API_KEY before starting the gateway"
+    warn ".env created from .env.example - open it and fill in LLM_GATEWAY_API_KEY before starting the gateway"
 else
     ok ".env already exists"
 fi
@@ -97,7 +97,7 @@ for agent in "${AGENTS[@]}"; do
             ok "Symlink already correct: workspace-$agent"
         fi
     elif [ -d "$link" ]; then
-        warn "$link exists as a real directory — skipping. Remove it manually if you want a symlink."
+        warn "$link exists as a real directory - skipping. Remove it manually if you want a symlink."
     else
         ln -s "$target" "$link"
         ok "Symlink created: workspace-$agent"
@@ -157,8 +157,8 @@ echo
 echo "Setup complete."
 echo
 echo "Next steps:"
-echo "  1. Open .env and set AISA_API_KEY (your LLM gateway key)"
-echo "     -- or set AISA_BASE_URL=http://localhost:11434/v1 and AISA_API_KEY=ollama for Ollama"
+echo "  1. Open .env and set LLM_GATEWAY_API_KEY and LLM_GATEWAY_BASE_URL"
+echo "     -- for Ollama: LLM_GATEWAY_API_KEY=ollama, LLM_GATEWAY_BASE_URL=http://localhost:11434/v1"
 echo "  2. Run: openclaw gateway restart   (after saving .env)"
 echo "  3. Run: openclaw dashboard         (opens http://127.0.0.1:18789)"
 echo "  4. Follow the Governance Validation steps in README.md"

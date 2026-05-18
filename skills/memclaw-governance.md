@@ -1,13 +1,13 @@
-# MemClaw Governance Skill
+﻿# MemClaw Governance Skill
 
 ## Core Principle
 Retrieval before reasoning. Never answer account questions from
-memory alone — always call memclaw_recall first.
+memory alone - always call memclaw_recall first.
 
 ## Fleet Scoping
 Pass only your authorized fleet_ids to every recall call.
 The fleet_ids parameter is an array: ["fleet-a", "fleet-b"]
-Unauthorized fleet_ids will return no results — this is by design.
+Unauthorized fleet_ids will return no results - this is by design.
 
 ## Retrieval Protocol
 1. Receive account query

@@ -1,4 +1,4 @@
-# setup.ps1 — First-time setup for memclaw-cross-fleet-gov (Windows)
+﻿# setup.ps1 - First-time setup for memclaw-cross-fleet-gov (Windows)
 # Run once from the repo root in an elevated PowerShell session (Run as Administrator).
 # After this script completes, day-to-day use is just: openclaw gateway restart
 
@@ -9,7 +9,7 @@ function Write-Step { param($msg) Write-Host "`n>> $msg" -ForegroundColor Cyan }
 function Write-OK   { param($msg) Write-Host "   OK: $msg" -ForegroundColor Green }
 function Write-Warn { param($msg) Write-Host "   WARN: $msg" -ForegroundColor Yellow }
 
-Write-Host "`nMemClaw Cross-Fleet Gov — Setup" -ForegroundColor White
+Write-Host "`nMemClaw Cross-Fleet Gov - Setup" -ForegroundColor White
 Write-Host "Repo: $REPO"
 
 # ── 1. Prerequisites ──────────────────────────────────────────────────────────
@@ -32,7 +32,7 @@ Write-Step "Environment file"
 
 if (-not (Test-Path "$REPO\.env")) {
     Copy-Item "$REPO\.env.example" "$REPO\.env"
-    Write-Warn ".env created from .env.example — open it and fill in AISA_API_KEY before starting the gateway"
+    Write-Warn ".env created from .env.example - open it and fill in LLM_GATEWAY_API_KEY before starting the gateway"
 } else {
     Write-OK ".env already exists"
 }
@@ -171,8 +171,8 @@ Write-Host @"
 Setup complete.
 
 Next steps:
-  1. Open .env and set AISA_API_KEY (your LLM gateway key)
-     -- or set AISA_BASE_URL=http://localhost:11434/v1 and AISA_API_KEY=ollama for Ollama
+  1. Open .env and set your LLM gateway key
+     -- or set LLM_GATEWAY_BASE_URL=http://localhost:11434/v1 and LLM_GATEWAY_API_KEY=ollama for Ollama
   2. Run: openclaw gateway restart   (after saving .env)
   3. Run: openclaw dashboard         (opens http://127.0.0.1:18789)
   4. Follow the Governance Validation steps in README.md
