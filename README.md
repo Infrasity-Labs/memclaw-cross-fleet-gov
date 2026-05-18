@@ -202,7 +202,7 @@ For production deployments where legal/sales data separation must be auditable, 
 
 ## Architecture
 
-![memclaw demo gif](./docs/images/memclaw-flow.png)
+![memclaw flow png](./docs/images/memclaw-flow.png)
 
 ## Agent Scope Matrix
 
