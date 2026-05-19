@@ -1,4 +1,4 @@
-﻿# CLAUDE.md
+# CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -21,9 +21,9 @@ This repo defaults to a **local MemClaw instance** - no cloud account or API key
 # 1. Start MemClaw locally
 docker run -d --name memclaw -p 8000:8000 ghcr.io/caura-ai/caura-memclaw:latest
 
-# 2. Copy and configure env (only AISA_API_KEY is required)
+# 2. Copy and configure env (only LLM_GATEWAY_API_KEY is required)
 copy .env.example .env
-# Fill in: AISA_API_KEY (your LLM gateway key; MEMCLAW_API_KEY can stay blank for local deploy)
+# Fill in: LLM_GATEWAY_API_KEY (your LLM gateway key; MEMCLAW_API_KEY can stay blank for local deploy)
 ```
 
 The `.env` variables are consumed by `.openclaw/openclaw.json` via `${VAR_NAME}` interpolation. Default `MEMCLAW_API_URL=http://localhost:8000` and `MEMCLAW_TENANT_ID=default` work out of the box.
@@ -33,10 +33,10 @@ The `.env` variables are consumed by `.openclaw/openclaw.json` via `${VAR_NAME}`
 ```powershell
 # First-time setup
 openclaw onboard --install-daemon
-# For AISA-compatible / OpenAI-compatible endpoints:
+# For any OpenAI-compatible endpoint:
 openclaw onboard --non-interactive --accept-risk `
-  --custom-api-key "your-api-key" `
-  --custom-base-url "https://api.aisa.one/v1"
+  --custom-api-key "your-llm-gateway-key" `
+  --custom-base-url "https://your-gateway.example.com/v1"
 openclaw doctor
 
 # Normal operation
@@ -92,16 +92,11 @@ Run `openclaw doctor` after any workspace path change.
 
 ### MemClaw Plugin
 
-Lives at `.openclaw/plugins/memclaw/`. Key source files:
-
-- [src/paths.ts](.openclaw/plugins/memclaw/src/paths.ts) - all paths resolve from `~/.openclaw`; plugin dir is always `~/.openclaw/plugins/memclaw`
-- [src/resolve-agent.ts](.openclaw/plugins/memclaw/src/resolve-agent.ts) - agent ID resolution order: explicit `agent_id` param → session key → env var `MEMCLAW_AGENT_ID` → install-scoped fallback
-- [src/validation.ts](.openclaw/plugins/memclaw/src/validation.ts) - workspace path containment check (`isContainedPath`), HMAC command signing, UUID validation
-- [src/tools.ts](.openclaw/plugins/memclaw/src/tools.ts) - MCP tool implementations
+Installed at `~/.openclaw/plugins/memclaw/` by the setup script via the canonical `install-plugin` endpoint. The plugin source is not vendored in this repo — `setup.sh`/`setup.ps1` fetch the live plugin on first run.
 
 ### MCP Tools Exposed
 
-`memclaw_write`, `memclaw_recall`, `memclaw_manage`, `memclaw_list`, `memclaw_insights`, `memclaw_stats`, `memclaw_evolve`, `memclaw_tune`, `memclaw_entity_get`, `memclaw_keystones_set`, `memclaw_doc`
+`memclaw_write`, `memclaw_recall`, `memclaw_manage`, `memclaw_list`, `memclaw_insights`, `memclaw_stats`, `memclaw_evolve`, `memclaw_tune`, `memclaw_entity_get`, `memclaw_keystones`, `memclaw_keystones_set`, `memclaw_doc`
 
 Always pass `agent_id: "<this-agent-id>"` explicitly on every tool call. If omitted, the plugin falls back to an install-scoped default that may not isolate memories correctly.
 

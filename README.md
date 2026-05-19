@@ -1,4 +1,4 @@
-﻿
+
 <p align="center">
   <img src="./docs/images/memclaw_banner.jpeg" alt="MemClaw Cross-Fleet Governance" width="100%" />
 </p>
@@ -209,8 +209,8 @@ For production deployments where legal/sales data separation must be auditable, 
 
 | Agent         | Fleet Access                       | Primary Use                               | Hard Boundary               |
 | ------------- | ---------------------------------- | ----------------------------------------- | --------------------------- |
-| `sales-agent` | `fleet-sales` · `fleet-org-shared` | Pipeline, renewals, deal stage            | Cannot access `fleet-legal` |
-| `legal-agent` | `fleet-legal` · `fleet-org-shared` | Holds, compliance, risk flags             | Cannot access `fleet-sales` |
+| `sales-agent` | `fleet-sales` · `fleet-org-shared` | Pipeline, renewals, deal stage            | Contract: never declares `fleet-legal` in `fleet_ids` (see [Memory Scope](#memory-scope-and-visibility-mechanisms)) |
+| `legal-agent` | `fleet-legal` · `fleet-org-shared` | Holds, compliance, risk flags             | Contract: never declares `fleet-sales` in `fleet_ids` (see [Memory Scope](#memory-scope-and-visibility-mechanisms)) |
 | `admin-agent` | All three fleets                   | Cross-fleet synthesis, conflict detection | None                        |
 
 ### Governance boundaries
@@ -227,7 +227,7 @@ All three agents pass `agent_id` on every tool call - required for per-row `scop
 
 ## MemClaw MCP Tools
 
-MemClaw exposes its full capability surface through 11 MCP tools. OpenClaw registers these at gateway start and agents call them as standard tool calls.
+MemClaw exposes its full capability surface through 12 MCP tools. OpenClaw registers these at gateway start and agents call them as standard tool calls.
 
 | Tool                    | What it does                                                                                                             |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -240,8 +240,9 @@ MemClaw exposes its full capability surface through 11 MCP tools. OpenClaw regis
 | `memclaw_evolve`        | Report outcomes against recalled memories and close the learning loop                                                    |
 | `memclaw_tune`          | Adjust recall weighting and enrichment parameters                                                                        |
 | `memclaw_entity_get`    | Fetch a specific entity record from the knowledge graph                                                                  |
-| `memclaw_keystones_set` | Pin high-confidence memories as keystones to protect them from automatic supersession or archival                        |
-| `memclaw_doc`           | Return tool schema documentation                                                                                         |
+| `memclaw_keystones`     | Retrieve mandatory keystone rules for the current scope. Call once per session before other actions; returned rules override conflicting instructions |
+| `memclaw_keystones_set` | Author or delete keystone rules (mandatory policies that override agent instructions); `op: set\|delete`; requires elevated trust |
+| `memclaw_doc`           | Structured-document CRUD: `write\|read\|query\|delete\|list_collections\|search`                                         |
 
 **Memory lifecycle:** MemClaw moves memories through eight statuses (`active`, `pending`, `confirmed`, `cancelled`, `outdated`, `conflicted`, `archived`, `deleted`) based on contradiction detection and outcome feedback. Supersession relationships are tracked via the `supersedes_id` field; use `memclaw_manage op=lineage` to trace them. No manual cleanup required.
 
@@ -491,7 +492,7 @@ Use memclaw_write to store:
   agent_id: "legal-agent"
 ```
 
-### Step B: Sales agent cannot see it - physically
+### Step B: Sales agent does not see it - fleet predicate enforced
 
 ```
 /agent sales-agent
@@ -503,6 +504,23 @@ Use memclaw_recall with:
 ```
 
 **Expected:** empty result. `fleet-legal` is not in the declared `fleet_ids` for this call, so MemClaw's storage layer never loads, scores, or returns legal fleet records. The boundary is enforced as a query predicate before the hybrid search runs.
+
+### Step B': What if the agent declares the wrong fleet?
+
+This is the "what if the agent lies?" question. Try it explicitly:
+
+```
+/agent sales-agent
+
+Use memclaw_recall with:
+  fleet_ids: ["fleet-legal"]
+  query: "HealthSystem Inc GDPR hold"
+  agent_id: "sales-agent"
+```
+
+**Expected:** the legal hold memory is returned - because the storage layer filters to whatever `fleet_ids` are declared, and does not validate them against the agent's identity.
+
+**This is by design and the key honesty of the OSS model.** The boundary is a query-layer contract, not a cryptographic key. In practice this never happens because sales-agent's `AGENTS.md` explicitly forbids declaring `fleet-legal` - the contract is enforced at the prompt layer. For isolation that cannot be bypassed at the prompt level regardless of what the agent declares, use separate tenants (see [Memory Scope and Visibility Mechanisms](#memory-scope-and-visibility-mechanisms)) or the managed service.
 
 ### Step C: Legal agent sees it
 
