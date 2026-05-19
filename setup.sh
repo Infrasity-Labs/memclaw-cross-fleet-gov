@@ -46,27 +46,34 @@ fi
 
 # ── 3. MemClaw Docker ─────────────────────────────────────────────────────────
 
-step "Starting MemClaw (Docker)"
+step "Starting MemClaw (docker compose)"
 
-if docker ps --filter "name=^memclaw$" --format "{{.Names}}" | grep -q "^memclaw$"; then
-    ok "MemClaw container already running"
-elif docker ps -a --filter "name=^memclaw$" --format "{{.Names}}" | grep -q "^memclaw$"; then
-    docker start memclaw >/dev/null
-    ok "MemClaw container restarted"
+MEMCLAW_DIR="$HOME/caura-memclaw"
+
+if docker compose -f "$MEMCLAW_DIR/docker-compose.yml" ps --services --filter "status=running" 2>/dev/null | grep -q .; then
+    ok "MemClaw already running"
 else
-    docker run -d --name memclaw -p 8000:8000 ghcr.io/caura-ai/caura-memclaw:latest >/dev/null
-    ok "MemClaw container started on http://localhost:8000"
+    if [ ! -d "$MEMCLAW_DIR" ]; then
+        echo "   Cloning caura-memclaw..."
+        git clone https://github.com/caura-ai/caura-memclaw "$MEMCLAW_DIR"
+    fi
+    if [ ! -f "$MEMCLAW_DIR/.env" ]; then
+        cp "$MEMCLAW_DIR/.env.example" "$MEMCLAW_DIR/.env"
+        warn "MemClaw .env created at $MEMCLAW_DIR/.env - review it before first use"
+    fi
+    docker compose -f "$MEMCLAW_DIR/docker-compose.yml" up -d
+    ok "MemClaw started"
 fi
 
 echo -n "   Waiting for MemClaw to be ready"
 attempts=0
-until curl -sf "$MEMCLAW_URL/health" >/dev/null 2>&1; do
+until curl -sf "$MEMCLAW_URL/api/v1/health" >/dev/null 2>&1; do
     sleep 2
     attempts=$((attempts + 1))
     echo -n "."
     if [ $attempts -ge 20 ]; then
         echo
-        echo "ERROR: MemClaw did not become ready after 40s. Check: docker logs memclaw" >&2
+        echo "ERROR: MemClaw did not become ready after 40s. Check: docker compose -f $MEMCLAW_DIR/docker-compose.yml logs" >&2
         exit 1
     fi
 done

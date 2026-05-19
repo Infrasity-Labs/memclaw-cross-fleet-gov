@@ -39,20 +39,25 @@ if (-not (Test-Path "$REPO\.env")) {
 
 # ── 3. MemClaw Docker ─────────────────────────────────────────────────────────
 
-Write-Step "Starting MemClaw (Docker)"
+Write-Step "Starting MemClaw (docker compose)"
 
-$running = docker ps --filter "name=memclaw" --format "{{.Names}}" 2>$null
-if ($running -match "memclaw") {
-    Write-OK "MemClaw container already running"
+$memclawDir = "$HOME\caura-memclaw"
+
+if (-not (Test-Path $memclawDir)) {
+    Write-Host "   Cloning caura-memclaw..."
+    git clone https://github.com/caura-ai/caura-memclaw $memclawDir
+}
+if (-not (Test-Path "$memclawDir\.env")) {
+    Copy-Item "$memclawDir\.env.example" "$memclawDir\.env"
+    Write-Warn "MemClaw .env created at $memclawDir\.env - review it before first use"
+}
+
+$runningServices = docker compose -f "$memclawDir\docker-compose.yml" ps --services --filter "status=running" 2>$null
+if ($runningServices) {
+    Write-OK "MemClaw already running"
 } else {
-    $exists = docker ps -a --filter "name=^memclaw$" --format "{{.Names}}" 2>$null
-    if ($exists -eq "memclaw") {
-        docker start memclaw | Out-Null
-        Write-OK "MemClaw container restarted"
-    } else {
-        docker run -d --name memclaw -p 8000:8000 ghcr.io/caura-ai/caura-memclaw:latest | Out-Null
-        Write-OK "MemClaw container started on http://localhost:8000"
-    }
+    docker compose -f "$memclawDir\docker-compose.yml" up -d
+    Write-OK "MemClaw started"
 }
 
 # Wait for MemClaw to be ready
@@ -63,14 +68,14 @@ while ($attempts -lt 20 -and -not $ready) {
     Start-Sleep -Seconds 2
     $attempts++
     try {
-        $resp = Invoke-WebRequest -Uri "http://localhost:8000/health" -UseBasicParsing -TimeoutSec 2
+        $resp = Invoke-WebRequest -Uri "http://localhost:8000/api/v1/health" -UseBasicParsing -TimeoutSec 2
         if ($resp.StatusCode -eq 200) { $ready = $true }
     } catch {}
     Write-Host "." -NoNewline
 }
 Write-Host ""
 if (-not $ready) {
-    throw "MemClaw did not become ready after 40s. Check: docker logs memclaw"
+    throw "MemClaw did not become ready after 40s. Check: docker compose -f $memclawDir\docker-compose.yml logs"
 }
 Write-OK "MemClaw is ready at http://localhost:8000"
 
@@ -147,7 +152,7 @@ foreach ($f in $fleets) {
     try {
         $url = "http://localhost:8000/api/v1/install-plugin?fleet_id=$($f.fleet)&api_url=http://localhost:8000"
         $script = Invoke-RestMethod $url
-        Invoke-Expression $script
+        $script | bash
         Write-OK "Plugin installed for $($f.fleet)"
     } catch {
         Write-Warn "Plugin install for $($f.fleet) failed or already installed: $_"

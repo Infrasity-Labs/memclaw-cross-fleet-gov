@@ -328,7 +328,7 @@ This repo runs against a **local MemClaw instance** by default -- no account, no
 
 | Option                                  | Requires                                                | Notes                                     |
 | --------------------------------------- | ------------------------------------------------------- | ----------------------------------------- |
-| **LLM gateway / DeepSeek V3** (default) | API key from your LLM gateway provider                  | OpenAI-compatible endpoint; fastest setup |
+| **LLM gateway** (default) | API key from your LLM gateway provider                  | OpenAI-compatible endpoint; fastest setup |
 | **Ollama** (fully local, no key)        | [Ollama](https://ollama.com) installed + a pulled model | Free, private, no rate limits             |
 
 > **Want managed MemClaw instead of Docker?** [memclaw.net](https://memclaw.net) offers a hosted service (free tier available) with a dashboard and provisioned fleets. Set `MEMCLAW_API_URL=https://memclaw.net/api/v1` and `MEMCLAW_API_KEY=mc_...` in your `.env` -- everything else stays the same. The managed service also provides full tenant isolation at the database level.
@@ -390,7 +390,7 @@ cd memclaw-cross-fleet-gov
 
 The setup script starts the OpenClaw gateway at the end. The gateway needs a configured LLM provider to start successfully, so pick your option now.
 
-**Option A - LLM gateway (OpenAI-compatible, e.g. AISA / DeepSeek V3)**
+**Option A - LLM gateway**
 
 ```bash
 openclaw onboard --install-daemon
@@ -439,7 +439,7 @@ Open `.env` (created by the script) and fill in your values:
 
 ```env
 LLM_GATEWAY_API_KEY=your-api-key
-LLM_GATEWAY_MODEL=deepseek-v3
+LLM_GATEWAY_MODEL=you-llm-gateway-model
 LLM_GATEWAY_BASE_URL=https://your-gateway.example.com/v1
 ```
 
