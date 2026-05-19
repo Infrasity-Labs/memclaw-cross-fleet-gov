@@ -14,6 +14,9 @@
       }
     }
   },
+  "env": {
+    "AISA_API_KEY": "${AISA_API_KEY}"
+  },
   "models": {
     "mode": "merge",
     "providers": {
@@ -23,8 +26,8 @@
         "api": "openai-completions",
         "models": [
           {
-            "id": "deepseek-v3",
-            "name": "DeepSeek V3"
+            "id": "claude-haiku-4-5-20251001",
+            "name": "Claude Haiku 4.5"
           }
         ]
       }
@@ -33,13 +36,12 @@
   "agents": {
     "defaults": {
       "model": {
-        "primary": "aisa/deepseek-v3",
-        "fallbacks": [
-          "aisa/deepseek-v3"
-        ]
+        "primary": "aisa/claude-haiku-4-5-20251001",
+        "fallbacks": ["aisa/gpt-4.1"]
       },
       "models": {
-        "aisa/deepseek-v3": {}
+        "aisa/claude-haiku-4-5-20251001": {},
+        "aisa/gpt-4.1": {}
       }
     },
     "list": [
@@ -246,19 +248,14 @@
       }
     },
 
-    "allow": [
-      "memclaw"
-    ],
+    "allow": ["memclaw"],
 
     "slots": {
       "memory": "memclaw"
     },
 
     "load": {
-      "paths": [
-        "./plugins/memclaw"
-      ]
+      "paths": ["./plugins/memclaw"]
     }
   }
 }
-

@@ -18,8 +18,10 @@ This repo defaults to a **local MemClaw instance** - no cloud account or API key
 ## Environment Setup
 
 ```powershell
-# 1. Start MemClaw locally
-docker run -d --name memclaw -p 8000:8000 ghcr.io/caura-ai/caura-memclaw:latest
+# 1. Start MemClaw locally (clone the repo and use docker compose)
+git clone https://github.com/caura-ai/caura-memclaw ~/caura-memclaw
+cp ~/caura-memclaw/.env.example ~/caura-memclaw/.env
+docker compose -f ~/caura-memclaw/docker-compose.yml up -d
 
 # 2. Copy and configure env (only LLM_GATEWAY_API_KEY is required)
 copy .env.example .env
