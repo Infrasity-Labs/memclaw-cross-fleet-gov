@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 # setup.sh - First-time setup for memclaw-cross-fleet-gov (macOS / Linux)
 # Run once from the repo root: bash setup.sh
 # After this completes, day-to-day use is just: openclaw gateway restart

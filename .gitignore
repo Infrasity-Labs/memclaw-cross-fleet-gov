@@ -1,9 +1,14 @@
 # Environment
 .env
 
-# OpenClaw plugin vendored deps — source is kept, node_modules is not
+# OpenClaw plugin — fetched at install time, not vendored
 .openclaw/plugins/**/node_modules/
 .openclaw/plugins/**/dist/
+.openclaw/plugins/memclaw/src/
+.openclaw/plugins/memclaw/skills/
+.openclaw/plugins/memclaw/tools.json
+.openclaw/plugins/memclaw/package.json
+.openclaw/plugins/memclaw/tsconfig.json
 
 # OpenClaw plugin runtime state
 .openclaw/plugins/installs.json
