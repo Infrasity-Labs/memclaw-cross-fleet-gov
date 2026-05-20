@@ -356,7 +356,7 @@ npm install -g openclaw@latest
 openclaw onboard --install-daemon
 ```
 
-The wizard walks you through selecting your provider and entering your API key. For Ollama, install it from [ollama.com](https://ollama.com), pull a model example: (`ollama pull qwen2.5:14b`), then select Ollama in the wizard.
+The wizard walks you through selecting your provider and entering your API key. For Ollama, install it from [ollama.com](https://ollama.com), pull a model (example): `ollama pull qwen2.5:14b`, then select Ollama in the wizard.
 
 ```bash
 openclaw doctor
