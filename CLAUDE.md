@@ -28,7 +28,7 @@ copy .env.example .env
 # Fill in: LLM_GATEWAY_API_KEY (your LLM gateway key; MEMCLAW_API_KEY can stay blank for local deploy)
 ```
 
-The `.env` variables are consumed by `.openclaw/openclaw.json` via `${VAR_NAME}` interpolation. Default `MEMCLAW_API_URL=http://localhost:8000` and `MEMCLAW_TENANT_ID=default` work out of the box.
+The `.env` variables are consumed by `.openclaw/openclaw.json` via `${VAR_NAME}` interpolation. Default `MEMCLAW_API_URL=http://localhost:8000` works out of the box; `MEMCLAW_TENANT_ID` is auto-resolved from the API key if left blank.
 
 ## Gateway Commands
 

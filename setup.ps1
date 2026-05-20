@@ -131,7 +131,7 @@ Write-Step "Registering agents with OpenClaw"
 foreach ($agent in @("sales-agent", "legal-agent", "admin-agent")) {
     $workspace = "$openclawHome\workspace-$agent"
     try {
-        openclaw agents add $agent --workspace $workspace --non-interactive 2>$null
+        openclaw agents add $agent --workspace $workspace --non-interactive
         Write-OK "Registered: $agent"
     } catch {
         Write-Warn "$agent may already be registered (run 'openclaw agents list' to confirm)"
@@ -152,7 +152,7 @@ foreach ($f in $fleets) {
     try {
         $url = "http://localhost:8000/api/v1/install-plugin?fleet_id=$($f.fleet)&api_url=http://localhost:8000"
         $script = Invoke-RestMethod $url
-        $bash = (Get-Command bash -ErrorAction SilentlyContinue)?.Source
+        $bash = (Get-Command bash -ErrorAction SilentlyContinue).Source
         if (-not $bash) {
             Write-Warn "bash not found — skipping plugin install for $($f.fleet). Install WSL or Git Bash, then re-run setup."
         } else {
