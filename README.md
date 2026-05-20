@@ -365,7 +365,7 @@ openclaw doctor
 ### 2. Clone the repo
 
 ```bash
-git clone https://github.com/Infrasity-Labs/memclaw-cross-fleet-gov.git
+git clone https://github.com/caura-ai/memclaw-cross-fleet-gov.git
 cd memclaw-cross-fleet-gov
 ```
 
