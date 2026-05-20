@@ -8,26 +8,26 @@
   },
   "auth": {
     "profiles": {
-      "aisa:default": {
-        "provider": "aisa",
+      "custom:default": {
+        "provider": "custom",
         "mode": "api_key"
       }
     }
   },
   "env": {
-    "AISA_API_KEY": "${AISA_API_KEY}"
+    "LLM_GATEWAY_API_KEY": "${LLM_GATEWAY_API_KEY}"
   },
   "models": {
     "mode": "merge",
     "providers": {
-      "aisa": {
-        "baseUrl": "${AISA_BASE_URL}",
-        "apiKey": "${AISA_API_KEY}",
+      "custom": {
+        "baseUrl": "${LLM_GATEWAY_BASE_URL}",
+        "apiKey": "${LLM_GATEWAY_API_KEY}",
         "api": "openai-completions",
         "models": [
           {
-            "id": "claude-haiku-4-5-20251001",
-            "name": "Claude Haiku 4.5"
+            "id": "${LLM_GATEWAY_MODEL}",
+            "name": "LLM Gateway Model"
           }
         ]
       }
@@ -36,12 +36,11 @@
   "agents": {
     "defaults": {
       "model": {
-        "primary": "aisa/claude-haiku-4-5-20251001",
-        "fallbacks": ["aisa/gpt-4.1"]
+        "primary": "custom/${LLM_GATEWAY_MODEL}",
+        "fallbacks": []
       },
       "models": {
-        "aisa/claude-haiku-4-5-20251001": {},
-        "aisa/gpt-4.1": {}
+        "custom/${LLM_GATEWAY_MODEL}": {}
       }
     },
     "list": [

@@ -39,7 +39,7 @@ step "Environment file"
 
 if [ ! -f "$REPO/.env" ]; then
     cp "$REPO/.env.example" "$REPO/.env"
-    warn ".env created from .env.example - open it and fill in LLM_GATEWAY_API_KEY before starting the gateway"
+    warn ".env created from .env.example - open it and fill in LLM_GATEWAY_API_KEY and LLM_GATEWAY_BASE_URL before starting the gateway"
 else
     ok ".env already exists"
 fi
@@ -165,7 +165,7 @@ echo "Setup complete."
 echo
 echo "Next steps:"
 echo "  1. Open .env and set LLM_GATEWAY_API_KEY and LLM_GATEWAY_BASE_URL"
-echo "     -- for Ollama: LLM_GATEWAY_API_KEY=ollama, LLM_GATEWAY_BASE_URL=http://localhost:11434/v1"
+echo "     -- for Ollama: LLM_GATEWAY_API_KEY=ollama, LLM_GATEWAY_BASE_URL=http://localhost:11434/v1, LLM_GATEWAY_MODEL=qwen2.5:14b"
 echo "  2. Run: openclaw gateway restart   (after saving .env)"
 echo "  3. Run: openclaw dashboard         (opens http://127.0.0.1:18789)"
 echo "  4. Follow the Governance Validation steps in README.md"

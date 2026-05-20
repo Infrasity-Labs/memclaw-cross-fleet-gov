@@ -38,7 +38,8 @@ openclaw onboard --install-daemon
 # For any OpenAI-compatible endpoint:
 openclaw onboard --non-interactive --accept-risk `
   --custom-api-key "your-llm-gateway-key" `
-  --custom-base-url "https://your-gateway.example.com/v1"
+  --custom-base-url "https://your-gateway.example.com/v1" `
+  --custom-model-id "your-model-id"
 openclaw doctor
 
 # Normal operation
