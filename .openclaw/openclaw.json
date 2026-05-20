@@ -47,42 +47,15 @@
     "list": [
       {
         "id": "sales-agent",
-        "workspace": "../agents/sales-agent",
-        "pluginConfig": {
-          "memclaw": {
-            "MEMCLAW_API_URL": "${MEMCLAW_API_URL}",
-            "MEMCLAW_API_KEY": "${MEMCLAW_API_KEY}",
-            "MEMCLAW_TENANT_ID": "${MEMCLAW_TENANT_ID}",
-            "MEMCLAW_FLEET_ID": "fleet-sales",
-            "MEMCLAW_AGENT_ID": "sales-agent"
-          }
-        }
+        "workspace": "workspace-sales-agent"
       },
       {
         "id": "legal-agent",
-        "workspace": "../agents/legal-agent",
-        "pluginConfig": {
-          "memclaw": {
-            "MEMCLAW_API_URL": "${MEMCLAW_API_URL}",
-            "MEMCLAW_API_KEY": "${MEMCLAW_API_KEY}",
-            "MEMCLAW_TENANT_ID": "${MEMCLAW_TENANT_ID}",
-            "MEMCLAW_FLEET_ID": "fleet-legal",
-            "MEMCLAW_AGENT_ID": "legal-agent"
-          }
-        }
+        "workspace": "workspace-legal-agent"
       },
       {
         "id": "admin-agent",
-        "workspace": "../agents/admin-agent",
-        "pluginConfig": {
-          "memclaw": {
-            "MEMCLAW_API_URL": "${MEMCLAW_API_URL}",
-            "MEMCLAW_API_KEY": "${MEMCLAW_API_KEY}",
-            "MEMCLAW_TENANT_ID": "${MEMCLAW_TENANT_ID}",
-            "MEMCLAW_FLEET_ID": "fleet-org-shared",
-            "MEMCLAW_AGENT_ID": "admin-agent"
-          }
-        }
+        "workspace": "workspace-admin-agent"
       }
     ]
   },
@@ -255,7 +228,7 @@
     },
 
     "load": {
-      "paths": ["./plugins/memclaw"]
+      "paths": ["~/.openclaw/plugins/memclaw"]
     }
   }
 }
