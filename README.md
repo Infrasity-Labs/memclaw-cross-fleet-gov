@@ -106,7 +106,7 @@ Switch to `legal-agent` and ask:
 
 > "What do you know about Acme Corp?"
 
-Expected result: 0 results. `legal-agent` only has access to `fleet-legal` and `fleet-org-shared` — the `fleet-sales` predicate excludes it entirely. This is the boundary working.
+Expected result: 0 results. `legal-agent` only has access to `fleet-legal` and `fleet-org-shared`, the `fleet-sales` predicate excludes it entirely. This is the boundary working.
 
 ![Legal agent boundary enforced](./docs/images/legal-agent.png)
 
@@ -116,7 +116,7 @@ Switch to `admin-agent` and ask:
 
 > "Use memclaw_recall to search for 'Acme Corp' across fleet_ids: ['fleet-sales', 'fleet-legal', 'fleet-org-shared'], agent_id: 'admin-agent'"
 
-Expected result: admin-agent surfaces both the sales pipeline entry and any legal holds — the conflict between active deal negotiations and compliance restrictions is visible only at the admin level.
+Expected result: admin-agent surfaces both the sales pipeline entry and any legal holds, the conflict between active deal negotiations and compliance restrictions is visible only at the admin level.
 
 ![Admin agent cross-fleet recall](./docs/images/admin-agent.png)
 
@@ -126,13 +126,13 @@ Expected result: admin-agent surfaces both the sales pipeline entry and any lega
 
 **Why not just use a single-agent memory system?** In an enterprise, you cannot dump all AI memory into one flat database. Legal handles sensitive compliance data that Sales should not see, but both need to share general account context. Single-agent setups force you to choose between completely siloed amnesia or a massive security nightmare.
 
-| Approach                | Problem                                                                                             |
-| ----------------------- | --------------------------------------------------------------------------------------------------- |
-| Total memory siloing    | Agents repeat work, miss shared context, have amnesia                                               |
-| Open shared memory      | Sales reads Legal holds. Legal reads negotiation ceilings. Data leaks.                              |
-| Prompt-level separation | "Don't mention compliance data" -- the data still passes through recall. LLMs can still surface it. |
+| Approach                | Problem                                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------------------ |
+| Total memory siloing    | Agents repeat work, miss shared context, have amnesia                                            |
+| Open shared memory      | Sales reads Legal holds. Legal reads negotiation ceilings. Data leaks.                           |
+| Prompt-level separation | "Don't mention compliance data" the data still passes through recall. LLMs can still surface it. |
 
-**MemClaw resolves this at the retrieval layer.** Fleet boundaries are enforced as query predicates before the hybrid search runs. An agent cannot surface what it was never given. No prompt engineering required -- the enforcement happens in the query layer, not in the system prompt.
+**MemClaw resolves this at the retrieval layer.** Fleet boundaries are enforced as query predicates before the hybrid search runs. An agent cannot surface what it was never given. No prompt engineering required, the enforcement happens in the query layer, not in the system prompt.
 
 ---
 
@@ -157,9 +157,9 @@ Agent calls memclaw_recall(fleet_ids=["fleet-sales", "fleet-org-shared"])
                     Ranked results returned to agent
 ```
 
-This is not a prompt rule. It is a database predicate inside MemClaw's storage layer -- the `fleet_ids` filter runs before context assembly, before scoring, before ranking.
+This is not a prompt rule. It is a database predicate inside MemClaw's storage layer, the `fleet_ids` filter runs before context assembly, before scoring, before ranking.
 
-**Important:** in the OSS self-hosted deploy, the boundary holds as long as the agent declares its `fleet_ids` honestly. An agent that passes `["fleet-legal"]` instead of `["fleet-sales"]` would cross the boundary -- the storage layer filters to what is declared, but does not validate what is declared against the agent's identity. For hard cross-domain isolation that cannot be bypassed at the prompt level, use separate tenants (see below) or the managed service.
+**Important:** in the OSS self-hosted deploy, the boundary holds as long as the agent declares its `fleet_ids` honestly. An agent that passes `["fleet-legal"]` instead of `["fleet-sales"]` would cross the boundary, the storage layer filters to what is declared, but does not validate what is declared against the agent's identity. For hard cross-domain isolation that cannot be bypassed at the prompt level, use separate tenants (see below) or the managed service.
 
 ---
 
@@ -191,7 +191,7 @@ memclaw_recall(fleet_ids=["fleet-sales"])
     -> fleet-legal rows: not loaded, not scored, not returned
 ```
 
-The boundary is enforced by the storage layer and is auditable. Its strength depends on agents declaring their `fleet_ids` according to their `AGENTS.md` contract -- the governance contract is real, but it is a query-layer contract, not a physical key boundary.
+The boundary is enforced by the storage layer and is auditable. Its strength depends on agents declaring their `fleet_ids` according to their `AGENTS.md` contract, the governance contract is real, but it is a query-layer contract, not a physical key boundary.
 
 ### 3. `scope_agent`: per-row agent ACL
 
@@ -335,161 +335,121 @@ MemClaw exposes its full capability surface through 12 MCP tools. OpenClaw regis
 ## Prerequisites
 
 - [Node.js 24+](https://nodejs.org/)
+- [Docker](https://www.docker.com/)
 - OpenClaw CLI: `npm install -g openclaw@latest`
-- [Docker](https://www.docker.com/) (to run MemClaw locally -- the default path)
-- An LLM gateway API key, or a local model via Ollama (no key required, see below)
+- An LLM provider: OpenAI-compatible gateway API key, or [Ollama](https://ollama.com) for fully local (no key required)
 
-This repo runs against a **local MemClaw instance** by default -- no account, no API key, no cloud dependency. You spin up MemClaw with a single Docker command and the three fleet partitions are created automatically on first write.
+This repo runs against a **local MemClaw instance** by default — no account, no API key, no cloud dependency. Docker pulls the MemClaw images and the three fleet partitions are created automatically on first write.
 
-**Two LLM options:**
-
-| Option                           | Requires                                                | Notes                                     |
-| -------------------------------- | ------------------------------------------------------- | ----------------------------------------- |
-| **LLM gateway** (default)        | API key from your LLM gateway provider                  | OpenAI-compatible endpoint; fastest setup |
-| **Ollama** (fully local, no key) | [Ollama](https://ollama.com) installed + a pulled model | Free, private, no rate limits             |
-
-> **Want managed MemClaw instead of Docker?** [memclaw.net](https://memclaw.net) offers a hosted service (free tier available) with a dashboard and provisioned fleets. Set `MEMCLAW_API_URL=https://memclaw.net/api/v1` and `MEMCLAW_API_KEY=mc_...` in your `.env` -- everything else stays the same. The managed service also provides full tenant isolation at the database level.
-
----
-
-## OpenClaw Setup
-
-Do this once before running the quickstart.
-
-### New users
-
-```bash
-openclaw onboard --install-daemon
-
-# LLM gateway (OpenAI-compatible endpoint):
-openclaw onboard --non-interactive --accept-risk \
-  --custom-api-key "your-llm-gateway-key" \
-  --custom-base-url "https://your-gateway.example.com/v1"
-
-# Ollama (fully local, no key):
-openclaw onboard --non-interactive --accept-risk \
-  --custom-api-key "ollama" \
-  --custom-base-url "http://localhost:11434/v1"
-
-openclaw doctor
-```
-
-### Existing users
-
-If agent workspace paths are doubling on Windows (known path resolution issue), use the junction approach in the Quickstart below. `openclaw agents add` takes an absolute path to register the workspace, but `openclaw.json` stores only the directory name relative to `~/.openclaw/`. The two are consistent -- `workspace-sales-agent` in `openclaw.json` resolves to `~/.openclaw/workspace-sales-agent`:
-
-```json
-{
-  "agents": {
-    "list": [
-      { "id": "sales-agent", "workspace": "workspace-sales-agent" },
-      { "id": "legal-agent", "workspace": "workspace-legal-agent" },
-      { "id": "admin-agent", "workspace": "workspace-admin-agent" }
-    ]
-  }
-}
-```
-
-Run `openclaw doctor` if any agent fails to bind on gateway start.
+> **Want managed MemClaw instead of Docker?** [memclaw.net](https://memclaw.net) offers a hosted service (free tier available). Set `MEMCLAW_API_URL=https://memclaw.net/api/v1` and `MEMCLAW_API_KEY=mc_...` in your `.env` everything else stays the same.
 
 ---
 
 ## Quickstart
 
-### 1. Clone
+### 1. Install OpenClaw and configure your LLM provider
+
+Do this once. The setup script in step 3 starts the gateway, it needs an LLM provider configured first.
+
+```bash
+npm install -g openclaw@latest
+openclaw onboard --install-daemon
+```
+
+The wizard walks you through selecting your provider and entering your API key. For Ollama, install it from [ollama.com](https://ollama.com), pull a model example: (`ollama pull qwen2.5:14b`), then select Ollama in the wizard.
+
+```bash
+openclaw doctor
+```
+
+### 2. Clone the repo
 
 ```bash
 git clone https://github.com/Infrasity-Labs/memclaw-cross-fleet-gov.git
 cd memclaw-cross-fleet-gov
 ```
 
-### 2. Configure your LLM provider (do this before running the setup script)
+### 3. Configure your environment
 
-The setup script starts the OpenClaw gateway at the end. The gateway needs a configured LLM provider to start successfully, so pick your option now.
-
-**Option A - LLM gateway**
+Copy `.env.example` to `.env` and fill in your LLM provider credentials:
 
 ```bash
-openclaw onboard --install-daemon
-openclaw onboard --non-interactive --accept-risk \
-  --custom-api-key "your-llm-gateway-key" \
-  --custom-base-url "https://your-gateway.example.com/v1"
+cp .env.example .env   # macOS / Linux
+copy .env.example .env  # Windows
 ```
 
-**Option B - Ollama (fully local, no API key required)**
+Then open `.env` and set `LLM_GATEWAY_API_KEY`, `LLM_GATEWAY_BASE_URL`, and `LLM_GATEWAY_MODEL` for your provider. For Ollama, use the commented-out Option B values.
 
-```bash
-# Install Ollama from https://ollama.com, then pull a model:
-ollama pull qwen2.5:14b   # or llama3.1:8b, mistral, etc.
+### 4. Run the setup script
 
-openclaw onboard --install-daemon
-openclaw onboard --non-interactive --accept-risk \
-  --custom-api-key "ollama" \
-  --custom-base-url "http://localhost:11434/v1"
-```
-
-Run `openclaw doctor` to confirm the provider is configured before continuing.
-
-### 3. Run the setup script
-
-The setup script handles the rest in one shot: starts MemClaw, creates workspace links, registers agents, installs the plugin, and starts the gateway.
+The setup script does everything in one shot: pulls and starts MemClaw via Docker, creates agent workspace links, registers all three agents, installs the MemClaw plugin, and starts the gateway.
 
 **macOS / Linux**
 
 ```bash
-bash setup.sh
+setup.sh
 ```
 
-**Windows (PowerShell - run as Administrator)**
+**Windows PowerShell (run as Administrator)**
 
 ```powershell
 .\setup.ps1
 ```
 
-The script is idempotent - safe to re-run if anything goes wrong.
+The script is idempotent, safe to re-run if anything fails.
 
-### 4. Set environment variables
+> **Windows:** the script must run as Administrator to create NTFS junctions in `~/.openclaw/`. If you see `Rejected workspace path outside openclawDir` in gateway logs after setup, re-run `.\setup.ps1` as Administrator.
 
-Open `.env` (created by the script) and fill in your values:
-
-**Option A - LLM gateway**
-
-```env
-LLM_GATEWAY_API_KEY=your-api-key
-LLM_GATEWAY_MODEL=you-llm-gateway-model
-LLM_GATEWAY_BASE_URL=https://your-gateway.example.com/v1
-```
-
-**Option B - Ollama**
-
-```env
-LLM_GATEWAY_API_KEY=ollama
-LLM_GATEWAY_MODEL=qwen2.5:14b
-LLM_GATEWAY_BASE_URL=http://localhost:11434/v1
-```
-
-Then restart the gateway to pick up the values:
+### 5. Open the dashboard and verify
 
 ```bash
-openclaw gateway restart
+openclaw dashboard                  # opens http://127.0.0.1:18789
+openclaw agents list --bindings     # all three agents should show memclaw bound
 ```
 
-### 5. Verify
-
-```bash
-openclaw agents list --bindings   # all three agents should show memclaw bound
-openclaw dashboard                 # opens http://127.0.0.1:18789
-```
-
-### 6. Confirm MemClaw tools are loaded
-
-In any agent session:
+In any agent session, confirm MemClaw tools are loaded:
 
 ```
 List available tools.
 ```
 
-Expected: `memclaw_recall`, `memclaw_write`, `memclaw_stats`, and other `memclaw_*` tools appear.
+Expected: `memclaw_recall`, `memclaw_write`, `memclaw_manage`, and other `memclaw_*` tools appear.
+
+<details>
+<summary><strong>Recall returns 0 results?</strong></summary>
+
+MemClaw uses vector search. If `OPENAI_API_KEY` is not set in `~/caura-memclaw/.env`, embeddings are skipped and recall returns nothing even for memories that exist.
+
+**Fix:** either set `OPENAI_API_KEY` (any OpenAI-compatible key works) in that file and restart the containers, or run the local embedder:
+
+```bash
+docker compose -f ~/caura-memclaw/docker-compose.yml --profile embed-local up -d
+```
+
+Downloads ~2GB on first run.
+
+</details>
+
+<details>
+<summary><strong>Windows 401 after updating <code>.env</code>?</strong></summary>
+
+Windows user environment variables take precedence over `.env` files. If your gateway keeps 401ing after you update `.env`, a stale system-level key is likely overriding it.
+
+**Check:**
+
+```powershell
+[System.Environment]::GetEnvironmentVariable("YOUR_KEY_VAR", "User")
+```
+
+**Fix:**
+
+```powershell
+[System.Environment]::SetEnvironmentVariable("YOUR_KEY_VAR", "new-value", "User")
+```
+
+Then open a fresh terminal and restart the gateway.
+
+</details>
 
 ---
 

@@ -32,7 +32,7 @@ Write-Step "Environment file"
 
 if (-not (Test-Path "$REPO\.env")) {
     Copy-Item "$REPO\.env.example" "$REPO\.env"
-    Write-Warn ".env created from .env.example - open it and fill in LLM_GATEWAY_API_KEY before starting the gateway"
+    Write-Warn ".env created from .env.example - open it and fill in LLM_GATEWAY_API_KEY and LLM_GATEWAY_BASE_URL before starting the gateway"
 } else {
     Write-OK ".env already exists"
 }
@@ -152,8 +152,13 @@ foreach ($f in $fleets) {
     try {
         $url = "http://localhost:8000/api/v1/install-plugin?fleet_id=$($f.fleet)&api_url=http://localhost:8000"
         $script = Invoke-RestMethod $url
-        $script | bash
-        Write-OK "Plugin installed for $($f.fleet)"
+        $bash = (Get-Command bash -ErrorAction SilentlyContinue)?.Source
+        if (-not $bash) {
+            Write-Warn "bash not found — skipping plugin install for $($f.fleet). Install WSL or Git Bash, then re-run setup."
+        } else {
+            $script | & $bash
+            Write-OK "Plugin installed for $($f.fleet)"
+        }
     } catch {
         Write-Warn "Plugin install for $($f.fleet) failed or already installed: $_"
     }
@@ -176,8 +181,8 @@ Write-Host @"
 Setup complete.
 
 Next steps:
-  1. Open .env and set your LLM gateway key
-     -- or set LLM_GATEWAY_BASE_URL=http://localhost:11434/v1 and LLM_GATEWAY_API_KEY=ollama for Ollama
+  1. Open .env and set LLM_GATEWAY_API_KEY and LLM_GATEWAY_BASE_URL (your LLM gateway key and endpoint)
+     -- for Ollama: LLM_GATEWAY_API_KEY=ollama, LLM_GATEWAY_BASE_URL=http://localhost:11434/v1, LLM_GATEWAY_MODEL=qwen2.5:14b
   2. Run: openclaw gateway restart   (after saving .env)
   3. Run: openclaw dashboard         (opens http://127.0.0.1:18789)
   4. Follow the Governance Validation steps in README.md
